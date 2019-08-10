@@ -1,1 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
+
+body {
+  background-color: aliceblue;
+}
+
+.container {
+  background-color: white;
+}
+
+#header {
+  background-color: #e8f0f8;
+}
+
+#main-navbar {
+  font-size: 1.2rem;
+}
+
+.breadcrumb {
+  background-color: #FFFFFF;
+}
+
+#searchBar {
+  width: 100%
+}
+
+#renderCanvas {
+  width: 100%;
+  outline: none;
+}
