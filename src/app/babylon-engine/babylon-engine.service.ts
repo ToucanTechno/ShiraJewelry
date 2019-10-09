@@ -14,6 +14,8 @@ export class BabylonEngineService {
   static readonly ROWS_COUNT = BabylonEngineService.BUTTONS_COUNT / BabylonEngineService.COLUMNS_COUNT;
   static readonly MARGIN = 0.3;
   static readonly RADIUS = 6;
+  static readonly GROUND_SIZE = 20;
+  static readonly GROUND_SUBDIVISIONS = 16;
 
   private canvas: HTMLCanvasElement;
   private engine: BABYLON.Engine;
@@ -55,8 +57,16 @@ export class BabylonEngineService {
   }
 
   createCamera(): void {
-    this.camera = new BABYLON.ArcRotateCamera('ArtRotateCamera',-Math.PI / 2,  Math.PI / 4, 2,
-      new BABYLON.Vector3(0, BabylonEngineService.SCALING.y * BabylonEngineService.ROWS_COUNT / 2 + BabylonEngineService.MARGIN, 0), this.scene);
+    this.camera = new BABYLON.ArcRotateCamera(
+      'ArtRotateCamera',
+      -Math.PI / 2,
+      Math.PI / 4,
+      2,
+      new BABYLON.Vector3(
+        0,
+        BabylonEngineService.SCALING.y * BabylonEngineService.ROWS_COUNT / 2 + BabylonEngineService.MARGIN,
+        0),
+      this.scene);
     this.camera.attachControl(this.canvas, true);
     this.camera.inputs.attached.mousewheel.detachControl(this.canvas);
   }
@@ -64,7 +74,12 @@ export class BabylonEngineService {
   createGround(): void {
     this.tiledGround = BABYLON.MeshBuilder.CreateTiledGround(
       'MTiledGround',
-      {xmin: -20, zmin: -20, xmax: 20, zmax: 20, subdivisions: {'h': 16, 'w': 16}},
+      {
+        xmin: -BabylonEngineService.GROUND_SIZE,
+        zmin: -BabylonEngineService.GROUND_SIZE,
+        xmax: BabylonEngineService.GROUND_SIZE,
+        zmax: BabylonEngineService.GROUND_SIZE,
+        subdivisions: {'h': BabylonEngineService.GROUND_SUBDIVISIONS, 'w': BabylonEngineService.GROUND_SUBDIVISIONS}},
       this.scene);
     const borderMaterial = new BABYLON.StandardMaterial('MBorder', this.scene);
     borderMaterial.diffuseTexture = new BABYLON.Texture('assets/textures/ground_tiles.png', this.scene);
@@ -85,20 +100,59 @@ export class BabylonEngineService {
     panel.position.y = BabylonEngineService.SCALING.y * BabylonEngineService.ROWS_COUNT / 2
       + panel.margin * BabylonEngineService.ROWS_COUNT;
 
-    // Let's add some buttons!
-    const addButton = function() {
-      const button = new GUI.HolographicButton('orientation');
-      panel.addControl(button);
 
-      button.text = 'Button #' + panel.children.length;
-      button.scaling = BabylonEngineService.SCALING;
-    };
 
     panel.blockLayout = true;
     for (let index = 0; index < BabylonEngineService.BUTTONS_COUNT; index++) {
-      addButton();
+      this.addPanelButton(panel, index);
     }
     panel.blockLayout = false;
+  }
+
+  addPanelButton(panel, index): void {
+    const faceUV = new Array(6);
+
+    for (let i = 0; i < 6; i++) {
+      faceUV[i] = new BABYLON.Vector4(0, 0, 0, 0);
+    }
+    faceUV[1] = new BABYLON.Vector4(0, 0, 1, 1);
+    const mesh = BABYLON.MeshBuilder.CreateBox(
+      'MButtonMesh',
+      {
+        height: 1,
+        width: 1,
+        depth: 0.08,
+        faceUV: faceUV
+      },
+      this.scene);
+
+    const material = new BABYLON.StandardMaterial('MButtonMaterial', mesh.getScene());
+    material.specularColor = BABYLON.Color3.Black();
+    mesh.material = material;
+
+    const buttonText = new GUI.TextBlock('TButtonText', 'Button #' + panel.children.length);
+    buttonText.color = 'red';
+    buttonText.fontSize = 24;
+
+    const facadeTexture = new GUI.AdvancedDynamicTexture(
+      'Facade',
+      512,
+      512,
+      this.scene,
+      true,
+      BABYLON.Texture.TRILINEAR_SAMPLINGMODE);
+    facadeTexture.rootContainer.scaleX = 2;
+    facadeTexture.rootContainer.scaleY = 2;
+    facadeTexture.premulAlpha = true;
+    // facadeTexture.background = 'rgb(255, 255, 255)';
+    facadeTexture.background = 'white  ';
+    facadeTexture.addControl(buttonText);
+
+    material.emissiveTexture = facadeTexture;
+
+    const button = new GUI.MeshButton3D(mesh, 'orientation' + index);
+    panel.addControl(button);
+    button.scaling = BabylonEngineService.SCALING.clone();
   }
 
   animate(): void {
