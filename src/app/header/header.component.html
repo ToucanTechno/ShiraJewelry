@@ -1,0 +1,60 @@
+<div id="header" class="row justify-content-center">
+  <div class="col-auto">
+    <a routerLink="/"><img src="../assets/images/shira_jewelry_hebrew_258h.png" style="height: 150px" alt="Shira Studio"></a>
+  </div>
+  <div class="col p-0">
+    <nav id="main-navbar" class="navbar navbar-expand navbar-dark bg-info text-light">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a class="nav-link" routerLink="/">Home</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="about">About</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="category/jewelry">Jewelry</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="category/art">Art</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="category/crafts">Crafts</a>
+        </li>
+      </ul>
+    </nav>
+    <nav id="secondary-navbar" class="navbar py-1 navbar-expand navbar-dark bg-dark text-light">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="category/jewelry/earrings">Earrings</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="category/jewelry/pins">Pins</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="category/jewelry/bracelets">Bracelets</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="category/jewelry/necklaces">Necklaces</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="category/jewelry/crowns">Crowns</a>
+        </li>
+      </ul>
+    </nav>
+    <nav class="my-1">
+      <ol class="breadcrumb pr-0 py-0 mb-0 align-items-center">
+        <li class="breadcrumb-item" routerLinkActive="active">
+          <a routerLink="/">Home</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          <a href="jewelry">Jewelry</a>
+        </li>
+        <form class="flex-grow-1 m-0 ml-4">
+          <div class="form-group m-0">
+            <input type="text" class="form-control" id="searchBar" placeholder="Search">
+          </div>
+        </form>
+      </ol>
+    </nav>
+  </div>
+</div>

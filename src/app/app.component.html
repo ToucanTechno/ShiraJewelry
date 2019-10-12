@@ -1,66 +1,8 @@
 <div class="container shadow mb-3">
-  <div id="header" class="row justify-content-center">
-    <div class="col-auto">
-      <a href="#"><img src="../assets/images/shira_jewelry_hebrew_258h.png" style="height: 150px" alt="Shira Studio"></a>
-    </div>
-    <div class="col p-0">
-      <nav id="main-navbar" class="navbar navbar-expand navbar-dark bg-info text-light">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="about">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="jewelry">Jewelry</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="art">Art</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="crafts">Crafts</a>
-          </li>
-        </ul>
-      </nav>
-      <nav id="secondary-navbar" class="navbar py-1 navbar-expand navbar-dark bg-dark text-light">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="jewelry/earrings">Earrings</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="jewelry/pins">Pins</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="jewelry/bracelets">Bracelets</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="jewelry/necklaces">Necklaces</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="jewelry/crowns">Crowns</a>
-          </li>
-        </ul>
-      </nav>
-      <nav class="my-1">
-        <ol class="breadcrumb pr-0 py-0 mb-0 align-items-center">
-          <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Library</li>
-          <form class="flex-grow-1 m-0 ml-4">
-            <div class="form-group m-0">
-              <input type="text" class="form-control" id="searchBar" placeholder="Search">
-            </div>
-          </form>
-        </ol>
-      </nav>
-    </div>
-  </div>
+  <app-header></app-header>
+  <router-outlet></router-outlet>
 </div>
 <div class="container-fluid">
-  <div class="row">
-    <div class="col">
-      <app-babylon-engine></app-babylon-engine>
-    </div>
-  </div>
+  <router-outlet name="fluid"></router-outlet>
 </div>
 
