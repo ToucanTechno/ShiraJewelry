@@ -1,24 +1,7 @@
 import { ElementRef, Injectable, NgZone } from '@angular/core';
 import 'babylonjs-materials';
-import {EventState} from 'babylonjs/Misc/observable';
-import {Mesh} from 'babylonjs/Meshes/mesh';
-import {Light} from 'babylonjs/Lights/light';
-import {Engine} from 'babylonjs/Engines/engine';
-import {ArcRotateCamera} from 'babylonjs/Cameras/arcRotateCamera';
-import {Scene} from 'babylonjs/scene';
-import {Color3, Color4, Vector3, Vector4} from 'babylonjs/Maths/math';
-import {HemisphericLight} from 'babylonjs/Lights/hemisphericLight';
-import { MeshBuilder } from 'babylonjs';
-import {StandardMaterial} from 'babylonjs/Materials/standardMaterial';
-import {Texture} from 'babylonjs/Materials/Textures/texture';
-import {TransformNode} from 'babylonjs/Meshes/transformNode';
-import {DynamicTexture} from 'babylonjs/Materials/Textures/dynamicTexture';
-import {Vector3WithInfo} from 'babylonjs-gui/3D/vector3WithInfo';
-import {GUI3DManager} from 'babylonjs-gui/3D/gui3DManager';
-import {CylinderPanel} from 'babylonjs-gui/3D/controls/cylinderPanel';
-import {TextBlock} from 'babylonjs-gui/2D/controls/textBlock';
-import {AdvancedDynamicTexture} from 'babylonjs-gui/2D/advancedDynamicTexture';
-import {MeshButton3D} from 'babylonjs-gui/3D/controls/meshButton3D';
+import * as BABYLON from 'babylonjs';
+import * as GUI from 'babylonjs-gui';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +9,7 @@ import {MeshButton3D} from 'babylonjs-gui/3D/controls/meshButton3D';
 export class BabylonEngineService {
   static readonly BUTTONS_COUNT = 21;
   static readonly COLUMNS_COUNT = 7;
-  static readonly SCALING = new Vector3(4, 4, 4);
+  static readonly SCALING = new BABYLON.Vector3(4, 4, 4);
   static readonly ROWS_COUNT = BabylonEngineService.BUTTONS_COUNT / BabylonEngineService.COLUMNS_COUNT;
   static readonly MARGIN = 0.3;
   static readonly RADIUS = 6;
@@ -34,13 +17,13 @@ export class BabylonEngineService {
   static readonly GROUND_SUBDIVISIONS = 16;
 
   private canvas: HTMLCanvasElement;
-  private engine: Engine;
-  private camera: ArcRotateCamera;
-  private scene: Scene;
-  private light: Light;
-  private tiledGround: Mesh;
+  private engine: BABYLON.Engine;
+  private camera: BABYLON.ArcRotateCamera;
+  private scene: BABYLON.Scene;
+  private light: BABYLON.Light;
+  private tiledGround: BABYLON.Mesh;
 
-  private GUIManager: GUI3DManager;
+  private GUIManager: GUI.GUI3DManager;
 
   public constructor(private ngZone: NgZone) {
   }
@@ -50,18 +33,18 @@ export class BabylonEngineService {
     this.canvas = canvas.nativeElement;
 
     // Then, load the Babylon 3D engine:
-    this.engine = new Engine(this.canvas,  true);
+    this.engine = new BABYLON.Engine(this.canvas,  true);
 
     // create a basic BJS Scene object
-    this.scene = new Scene(this.engine);
-    this.scene.clearColor = new Color4(0, 0, 0, 0);
+    this.scene = new BABYLON.Scene(this.engine);
+    this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 
     this.createCamera();
 
     this.createGround();
 
     // create a basic light, aiming 0,1,0 - meaning, to the sky
-    this.light = new HemisphericLight('LHemispheric', new Vector3(0, 10, 0), this.scene);
+    this.light = new BABYLON.HemisphericLight('LHemispheric', new BABYLON.Vector3(0, 10, 0), this.scene);
     this.light.intensity = 1.0;
 
     this.createButtonsCylinder();
@@ -73,12 +56,12 @@ export class BabylonEngineService {
   }
 
   createCamera(): void {
-    this.camera = new ArcRotateCamera(
+    this.camera = new BABYLON.ArcRotateCamera(
       'ArtRotateCamera',
       -Math.PI / 2,
       Math.PI / 4,
       2,
-      new Vector3(
+      new BABYLON.Vector3(
         0,
         BabylonEngineService.SCALING.y * BabylonEngineService.ROWS_COUNT / 2 + BabylonEngineService.MARGIN,
         0),
@@ -88,7 +71,7 @@ export class BabylonEngineService {
   }
 
   createGround(): void {
-    this.tiledGround = MeshBuilder.CreateTiledGround(
+    this.tiledGround = BABYLON.MeshBuilder.CreateTiledGround(
       'MTiledGround',
       {
         xmin: -BabylonEngineService.GROUND_SIZE,
@@ -97,16 +80,16 @@ export class BabylonEngineService {
         zmax: BabylonEngineService.GROUND_SIZE,
         subdivisions: {'h': BabylonEngineService.GROUND_SUBDIVISIONS, 'w': BabylonEngineService.GROUND_SUBDIVISIONS}},
       this.scene);
-    const borderMaterial = new StandardMaterial('MBorder', this.scene);
-    borderMaterial.diffuseTexture = new Texture('assets/textures/ground_tiles.png', this.scene);
+    const borderMaterial = new BABYLON.StandardMaterial('MBorder', this.scene);
+    borderMaterial.diffuseTexture = new BABYLON.Texture('assets/textures/ground_tiles.png', this.scene);
     this.tiledGround.material = borderMaterial;
   }
 
   createButtonsCylinder(): void {
-    this.GUIManager = new GUI3DManager(this.scene);
-    const anchor = new TransformNode('');
+    this.GUIManager = new GUI.GUI3DManager(this.scene);
+    const anchor = new BABYLON.TransformNode('');
 
-    const panel = new CylinderPanel();
+    const panel = new GUI.CylinderPanel();
     panel.columns = BabylonEngineService.COLUMNS_COUNT;
     panel.margin = BabylonEngineService.MARGIN;
     panel.radius = BabylonEngineService.RADIUS;
@@ -129,10 +112,10 @@ export class BabylonEngineService {
     const faceUV = new Array(6);
 
     for (let i = 0; i < 6; i++) {
-      faceUV[i] = new Vector4(0, 0, 0, 0);
+      faceUV[i] = new BABYLON.Vector4(0, 0, 0, 0);
     }
-    faceUV[1] = new Vector4(0, 0, 1, 1);
-    const mesh = MeshBuilder.CreateBox(
+    faceUV[1] = new BABYLON.Vector4(0, 0, 1, 1);
+    const mesh = BABYLON.MeshBuilder.CreateBox(
       'MButtonMesh',
       {
         height: 1,
@@ -142,21 +125,21 @@ export class BabylonEngineService {
       },
       this.scene);
 
-    const material = new StandardMaterial('MButtonMaterial', mesh.getScene());
-    material.specularColor = Color3.Black();
+    const material = new BABYLON.StandardMaterial('MButtonMaterial', mesh.getScene());
+    material.specularColor = BABYLON.Color3.Black();
     mesh.material = material;
 
-    const buttonText = new TextBlock('TButtonText', 'Button #' + panel.children.length);
+    const buttonText = new GUI.TextBlock('TButtonText', 'Button #' + panel.children.length);
     buttonText.color = 'red';
     buttonText.fontSize = 24;
 
-    const facadeTexture = new AdvancedDynamicTexture(
+    const facadeTexture = new GUI.AdvancedDynamicTexture(
       'Facade',
       512,
       512,
       this.scene,
       true,
-      Texture.TRILINEAR_SAMPLINGMODE);
+      BABYLON.Texture.TRILINEAR_SAMPLINGMODE);
     facadeTexture.rootContainer.scaleX = 2;
     facadeTexture.rootContainer.scaleY = 2;
     facadeTexture.premulAlpha = true;
@@ -166,7 +149,7 @@ export class BabylonEngineService {
 
     material.emissiveTexture = facadeTexture;
 
-    const button = new MeshButton3D(mesh, 'orientation' + index);
+    const button = new GUI.MeshButton3D(mesh, 'orientation' + index);
     button.onPointerClickObservable.add(this.buttonClickHandler);
     panel.addControl(button);
     button.scaling = BabylonEngineService.SCALING.clone();
@@ -188,7 +171,7 @@ export class BabylonEngineService {
     });
   }
 
-  buttonClickHandler(eventData: Vector3WithInfo, eventState: EventState): void {
+  buttonClickHandler(eventData: GUI.Vector3WithInfo, eventState: BABYLON.EventState): void {
 
   }
 
@@ -202,57 +185,57 @@ export class BabylonEngineService {
   showWorldAxis (size: number) {
 
     const makeTextPlane = (text: string, color: string, textSize: number) => {
-      const dynamicTexture = new DynamicTexture('DynamicTexture', 50, this.scene, true);
+      const dynamicTexture = new BABYLON.DynamicTexture('DynamicTexture', 50, this.scene, true);
       dynamicTexture.hasAlpha = true;
       dynamicTexture.drawText(text, 5, 40, 'bold 36px Arial', color , 'transparent', true);
-      const plane = Mesh.CreatePlane('TextPlane', textSize, this.scene, true);
-      const material = new StandardMaterial('TextPlaneMaterial', this.scene);
+      const plane = BABYLON.Mesh.CreatePlane('TextPlane', textSize, this.scene, true);
+      const material = new BABYLON.StandardMaterial('TextPlaneMaterial', this.scene);
       material.backFaceCulling = false;
-      material.specularColor = new Color3(0, 0, 0);
+      material.specularColor = new BABYLON.Color3(0, 0, 0);
       material.diffuseTexture = dynamicTexture;
       plane.material = material;
 
       return plane;
     };
 
-    const axisX = Mesh.CreateLines(
+    const axisX = BABYLON.Mesh.CreateLines(
       'axisX',
       [
-        Vector3.Zero(),
-        new Vector3(size, 0, 0), new Vector3(size * 0.95, 0.05 * size, 0),
-        new Vector3(size, 0, 0), new Vector3(size * 0.95, -0.05 * size, 0)
+        BABYLON.Vector3.Zero(),
+        new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.95, 0.05 * size, 0),
+        new BABYLON.Vector3(size, 0, 0), new BABYLON.Vector3(size * 0.95, -0.05 * size, 0)
       ],
       this.scene
     );
 
-    axisX.color = new Color3(1, 0, 0);
+    axisX.color = new BABYLON.Color3(1, 0, 0);
     const xChar = makeTextPlane('X', 'red', size / 10);
-    xChar.position = new Vector3(0.9 * size, -0.05 * size, 0);
+    xChar.position = new BABYLON.Vector3(0.9 * size, -0.05 * size, 0);
 
-    const axisY = Mesh.CreateLines(
+    const axisY = BABYLON.Mesh.CreateLines(
       'axisY',
       [
-        Vector3.Zero(), new Vector3(0, size, 0), new Vector3( -0.05 * size, size * 0.95, 0),
-        new Vector3(0, size, 0), new Vector3( 0.05 * size, size * 0.95, 0)
+        BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, size, 0), new BABYLON.Vector3( -0.05 * size, size * 0.95, 0),
+        new BABYLON.Vector3(0, size, 0), new BABYLON.Vector3( 0.05 * size, size * 0.95, 0)
       ],
       this.scene
     );
 
-    axisY.color = new Color3(0, 1, 0);
+    axisY.color = new BABYLON.Color3(0, 1, 0);
     const yChar = makeTextPlane('Y', 'green', size / 10);
-    yChar.position = new Vector3(0, 0.9 * size, -0.05 * size);
+    yChar.position = new BABYLON.Vector3(0, 0.9 * size, -0.05 * size);
 
-    const axisZ = Mesh.CreateLines(
+    const axisZ = BABYLON.Mesh.CreateLines(
       'axisZ',
       [
-        Vector3.Zero(), new Vector3(0, 0, size), new Vector3( 0 , -0.05 * size, size * 0.95),
-        new Vector3(0, 0, size), new Vector3( 0, 0.05 * size, size * 0.95)
+        BABYLON.Vector3.Zero(), new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3( 0 , -0.05 * size, size * 0.95),
+        new BABYLON.Vector3(0, 0, size), new BABYLON.Vector3( 0, 0.05 * size, size * 0.95)
       ],
       this.scene
     );
 
-    axisZ.color = new Color3(0, 0, 1);
+    axisZ.color = new BABYLON.Color3(0, 0, 1);
     const zChar = makeTextPlane('Z', 'blue', size / 10);
-    zChar.position = new Vector3(0, 0.05 * size, 0.9 * size);
+    zChar.position = new BABYLON.Vector3(0, 0.05 * size, 0.9 * size);
   }
 }
