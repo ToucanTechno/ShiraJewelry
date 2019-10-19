@@ -3,6 +3,8 @@ import 'babylonjs-materials';
 import * as BABYLON from 'babylonjs';
 import * as GUI from 'babylonjs-gui';
 
+import { ProductsMouseInput } from './products-input';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,6 +26,8 @@ export class BabylonEngineService {
   private tiledGround: BABYLON.Mesh;
 
   private GUIManager: GUI.GUI3DManager;
+  private GUICamera: BABYLON.Camera;
+  private advancedTexture: GUI.AdvancedDynamicTexture;
 
   public constructor(private ngZone: NgZone) {
   }
@@ -47,27 +51,66 @@ export class BabylonEngineService {
     this.light = new BABYLON.HemisphericLight('LHemispheric', new BABYLON.Vector3(0, 10, 0), this.scene);
     this.light.intensity = 1.0;
 
+    // 3D GUI
+    this.GUIManager = new GUI.GUI3DManager(this.scene);
     this.createButtonsCylinder();
 
+    // 2D GUI
+    this.GUICamera = new BABYLON.ArcRotateCamera('GUI2DCamera', 0, 0.8, 100, BABYLON.Vector3.Zero(), this.scene);
+    this.GUICamera.layerMask = 2;
+    this.advancedTexture = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
+    this.advancedTexture.layer.layerMask = 2;
+    this.createNavigationButtons();
+
     // simple rotation along the y axis
+    this.scene.activeCameras = [this.camera, this.GUICamera];
     this.scene.registerAfterRender(() => {
 
     });
   }
 
+  createNavigationButtons(): void {
+    const rightButton = GUI.Button.CreateImageOnlyButton('next', 'assets/images/next_arrow.png');
+    rightButton.width = '200px';
+    rightButton.height = '200px';
+    rightButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    console.log(this.camera.inputs);
+    if ('productsmouse' in this.camera.inputs.attached) {
+      rightButton.onPointerClickObservable.add((eventData, eventState) => {
+        (<ProductsMouseInput>this.camera.inputs.attached.productsmouse).onClickNext();
+      });
+    }
+    this.advancedTexture.addControl(rightButton);
+
+    const leftButton = GUI.Button.CreateImageOnlyButton('previous', 'assets/images/previous_arrow.png');
+    leftButton.width = '200px';
+    leftButton.height = '200px';
+    leftButton.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    if ('productsmouse' in this.camera.inputs.attached) {
+      leftButton.onPointerClickObservable.add((eventData, eventState) => {
+        (<ProductsMouseInput>this.camera.inputs.attached.productsmouse).onClickPrevious();
+      });
+    }
+    this.advancedTexture.addControl(leftButton);
+  }
+
   createCamera(): void {
     this.camera = new BABYLON.ArcRotateCamera(
-      'ArtRotateCamera',
-      -Math.PI / 2,
-      Math.PI / 4,
-      2,
+      'MainCamera',
+      Math.PI,
+      Math.PI / 2,
+      1,
       new BABYLON.Vector3(
         0,
         BabylonEngineService.SCALING.y * BabylonEngineService.ROWS_COUNT / 2 + BabylonEngineService.MARGIN,
         0),
       this.scene);
+    this.camera.layerMask = 1;
+    this.camera.inputs.add(new ProductsMouseInput(BabylonEngineService.BUTTONS_COUNT, this.scene));
     this.camera.attachControl(this.canvas, true);
     this.camera.inputs.attached.mousewheel.detachControl(this.canvas);
+    this.camera.inputs.attached.keyboard.detachControl(this.canvas);
+    this.camera.inputs.attached.pointers.detachControl(this.canvas);
   }
 
   createGround(): void {
@@ -80,13 +123,14 @@ export class BabylonEngineService {
         zmax: BabylonEngineService.GROUND_SIZE,
         subdivisions: {'h': BabylonEngineService.GROUND_SUBDIVISIONS, 'w': BabylonEngineService.GROUND_SUBDIVISIONS}},
       this.scene);
+    this.tiledGround.layerMask = 1;
+
     const borderMaterial = new BABYLON.StandardMaterial('MBorder', this.scene);
     borderMaterial.diffuseTexture = new BABYLON.Texture('assets/textures/ground_tiles.png', this.scene);
     this.tiledGround.material = borderMaterial;
   }
 
   createButtonsCylinder(): void {
-    this.GUIManager = new GUI.GUI3DManager(this.scene);
     const anchor = new BABYLON.TransformNode('');
 
     const panel = new GUI.CylinderPanel();
@@ -98,8 +142,6 @@ export class BabylonEngineService {
     panel.linkToTransformNode(anchor);
     panel.position.y = BabylonEngineService.SCALING.y * BabylonEngineService.ROWS_COUNT / 2
       + panel.margin * BabylonEngineService.ROWS_COUNT;
-
-
 
     panel.blockLayout = true;
     for (let index = 0; index < BabylonEngineService.BUTTONS_COUNT; index++) {
@@ -116,7 +158,7 @@ export class BabylonEngineService {
     }
     faceUV[1] = new BABYLON.Vector4(0, 0, 1, 1);
     const mesh = BABYLON.MeshBuilder.CreateBox(
-      'MButtonMesh',
+      `3DButtonMesh${index}`,
       {
         height: 1,
         width: 1,
@@ -124,14 +166,21 @@ export class BabylonEngineService {
         faceUV: faceUV
       },
       this.scene);
+    mesh.layerMask = 1;
 
-    const material = new BABYLON.StandardMaterial('MButtonMaterial', mesh.getScene());
+    const material = new BABYLON.StandardMaterial('MButtonMaterial', this.scene);
     material.specularColor = BABYLON.Color3.Black();
     mesh.material = material;
 
     const buttonText = new GUI.TextBlock('TButtonText', 'Button #' + panel.children.length);
     buttonText.color = 'red';
-    buttonText.fontSize = 24;
+    buttonText.outlineColor = 'white';
+    buttonText.outlineWidth = 10;
+    buttonText.top = 512 / 2 - 100 / 2; // 512/2 - 100/2 is botton baseline, reduce any amount of bottom padding needed
+    buttonText.fontSize = 100;
+
+    const buttonImage = new GUI.Image(`Button Image ${index}`,
+      'https://images.pexels.com/photos/67636/rose-blue-flower-rose-blooms-67636.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500');
 
     const facadeTexture = new GUI.AdvancedDynamicTexture(
       'Facade',
@@ -140,18 +189,20 @@ export class BabylonEngineService {
       this.scene,
       true,
       BABYLON.Texture.TRILINEAR_SAMPLINGMODE);
-    facadeTexture.rootContainer.scaleX = 2;
-    facadeTexture.rootContainer.scaleY = 2;
+    facadeTexture.rootContainer.scaleX = 1;
+    facadeTexture.rootContainer.scaleY = 1;
     facadeTexture.premulAlpha = true;
     // facadeTexture.background = 'rgb(255, 255, 255)';
     facadeTexture.background = 'white';
+    facadeTexture.addControl(buttonImage);
     facadeTexture.addControl(buttonText);
 
     material.emissiveTexture = facadeTexture;
 
-    const button = new GUI.MeshButton3D(mesh, 'orientation' + index);
+    const button = new GUI.MeshButton3D(mesh, `3DButton${index}`);
     button.onPointerClickObservable.add(this.buttonClickHandler);
     panel.addControl(button);
+    // Clone so that hover effect works correctly
     button.scaling = BabylonEngineService.SCALING.clone();
   }
 
@@ -172,7 +223,7 @@ export class BabylonEngineService {
   }
 
   buttonClickHandler(eventData: GUI.Vector3WithInfo, eventState: BABYLON.EventState): void {
-
+    console.log(eventState.currentTarget.name);
   }
 
   /**
