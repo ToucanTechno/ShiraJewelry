@@ -18,6 +18,10 @@ export class ProductsMouseInput {
       new BABYLON.Vector3(0, 0, 0), scene);
   }
 
+  static onKeyDown(event: Event): void {
+    console.log(event);
+  }
+
   getClassName(): string {
     return 'ProductsMouseInput';
   }
@@ -27,15 +31,11 @@ export class ProductsMouseInput {
   }
 
   attachControl(element: HTMLElement, noPreventDefault?: boolean): void {
-    element.addEventListener('onKeyDown', this.onKeyDown.bind(this));
+    element.addEventListener('onKeyDown', ProductsMouseInput.onKeyDown);
   }
 
   detachControl (element: HTMLElement): void {
-    element.removeEventListener('onKeyDown', )
-  }
-
-  onKeyDown(event: HTMLElementEventMap): void {
-    console.log(event);
+    element.removeEventListener('onKeyDown', ProductsMouseInput.onKeyDown);
   }
 
   onClickNext(): void {
