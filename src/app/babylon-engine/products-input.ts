@@ -4,18 +4,14 @@ import * as BABYLON from 'babylonjs';
 export class ProductsMouseInput {
 
   camera: BABYLON.Nullable<BABYLON.ArcRotateCamera>;
-  ghostCamera: BABYLON.ArcRotateCamera;
   buttonIndex: number;
   buttonsCount: number;
+  boundOnKeyDown: (HTMLElementEventMap) => void;
 
   constructor(buttonsCount: number, scene: BABYLON.Scene) {
     this.buttonIndex = 0;
     this.buttonsCount = buttonsCount;
-    this.ghostCamera = new BABYLON.ArcRotateCamera('GhostCamera',
-      -Math.PI / 2 ,
-      Math.PI / 4,
-      5,
-      new BABYLON.Vector3(0, 0, 0), scene);
+    this.boundOnKeyDown = this.onKeyDown.bind(this)
   }
 
   getClassName(): string {
@@ -27,11 +23,11 @@ export class ProductsMouseInput {
   }
 
   attachControl(element: HTMLElement, noPreventDefault?: boolean): void {
-    element.addEventListener('onKeyDown', this.onKeyDown.bind(this));
+    element.addEventListener('onKeyDown', this.boundOnKeyDown);
   }
 
   detachControl (element: HTMLElement): void {
-    element.removeEventListener('onKeyDown', )
+    element.removeEventListener('onKeyDown', this.boundOnKeyDown)
   }
 
   onKeyDown(event: HTMLElementEventMap): void {
@@ -82,7 +78,7 @@ export class ProductsMouseInput {
       for (let i = 0; i < keysCount; i++) {
         const newPosition = camera.position.add(
           direction.scale(i / (keysCount - 1)));
-        newPosition.normalize().scaleInPlace(cameraTargetPosition.length())
+        // newPosition.normalize().scaleInPlace(cameraTargetPosition.length());
         keys.push({
           frame: i,
           // Walk on a great arc

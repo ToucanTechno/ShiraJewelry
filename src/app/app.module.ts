@@ -10,6 +10,7 @@ import { AboutComponent } from './about/about.component';
 import { ProductsComponent } from './products/products.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { EmptyComponent } from './empty/empty.component';
+import {BabylonEngineService} from './babylon-engine/babylon-engine.service';
 
 const routes: Routes = [
   { path: '', component: BabylonEngineComponent, outlet: 'fluid', pathMatch: 'full' },
@@ -37,7 +38,7 @@ const routes: Routes = [
     BrowserModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [],
+  providers: [BabylonEngineService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
