@@ -14,6 +14,10 @@ export class ProductsMouseInput {
     this.boundOnKeyDown = this.onKeyDown.bind(this)
   }
 
+  static onKeyDown(event: Event): void {
+    console.log(event);
+  }
+
   getClassName(): string {
     return 'ProductsMouseInput';
   }
@@ -23,15 +27,11 @@ export class ProductsMouseInput {
   }
 
   attachControl(element: HTMLElement, noPreventDefault?: boolean): void {
-    element.addEventListener('onKeyDown', this.boundOnKeyDown);
+    element.addEventListener('onKeyDown', ProductsMouseInput.onKeyDown);
   }
 
   detachControl (element: HTMLElement): void {
-    element.removeEventListener('onKeyDown', this.boundOnKeyDown)
-  }
-
-  onKeyDown(event: HTMLElementEventMap): void {
-    console.log(event);
+    element.removeEventListener('onKeyDown', ProductsMouseInput.onKeyDown);
   }
 
   onClickNext(): void {
