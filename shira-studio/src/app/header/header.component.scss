@@ -1,0 +1,25 @@
+title-row {
+  display: flex;
+  flex-direction: row;
+}
+
+span.title {
+  margin-right: 30px;
+}
+
+nav {
+  flex-grow: 1;
+}
+
+.title-row-actions {
+  width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  mat-form-field {
+    font-size: 10pt;
+  }
+  .search-bar-icon {
+    font-size: 11pt;
+  }
+}

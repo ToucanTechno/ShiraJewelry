@@ -1,0 +1,19 @@
+#product-display-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
+#product-thumbnails {
+  display: flex;
+  flex-direction: column;
+  img {
+    margin: 0 2px 1px 0;
+    width: 40px;
+  }
+}
+
+#product-image img {
+  max-width: 100%;
+  min-width: 100px;
+}

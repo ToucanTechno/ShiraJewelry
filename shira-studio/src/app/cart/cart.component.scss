@@ -1,0 +1,9 @@
+#cart-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+#cart-items {
+  flex-grow: 1;
+}

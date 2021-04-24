@@ -1,0 +1,8 @@
+#product-container {
+  display: flex;
+  flex-direction: row;
+}
+
+#product-container > * {
+  flex-grow: 1;
+}

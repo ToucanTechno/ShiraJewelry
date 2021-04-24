@@ -1,0 +1,30 @@
+<mat-toolbar>
+  <mat-toolbar-row class="title-row">
+    <span class="title">{{title}}</span>
+    <nav mat-tab-nav-bar>
+      <a mat-tab-link [matMenuTriggerFor]="menu1" active="active" disableRipple>
+        Category 1
+        <mat-menu #menu1="matMenu">
+          <button mat-menu-item><span>Option 1</span></button>
+          <button mat-menu-item><span>Option 2</span></button>
+        </mat-menu>
+      </a>
+      <a mat-tab-link [matMenuTriggerFor]="menu2" disableRipple>
+        Category 2
+        <mat-menu #menu2="matMenu">
+          <button mat-menu-item><span>Option 3</span></button>
+          <button mat-menu-item><span>Option 4</span></button>
+        </mat-menu>
+      </a>
+    </nav>
+    <span class="title-row-actions">
+      <mat-form-field floatLabel="never">
+        <input matInput placeholder="Search" [(ngModel)]="searchText">
+        <mat-icon class="search-bar-icon" matSuffix>search</mat-icon>
+      </mat-form-field>
+      <mat-icon>language</mat-icon>
+      <mat-icon>account_circle</mat-icon>
+      <mat-icon>shopping_cart</mat-icon>
+    </span>
+  </mat-toolbar-row>
+</mat-toolbar>

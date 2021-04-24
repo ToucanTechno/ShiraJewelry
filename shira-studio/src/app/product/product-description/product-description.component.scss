@@ -1,0 +1,23 @@
+img {
+  width: 100px;
+  float: right;
+}
+
+#cart-button {
+  width: 100%;
+  border-radius: 18px;
+}
+
+#info-line {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  h2 {
+    margin-bottom: 5px;
+  }
+  h3 {
+    display: inline-block;
+    margin: 0;
+  }
+}
+

@@ -1,0 +1,10 @@
+#container {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+#body-container {
+  flex-grow: 1;
+}
