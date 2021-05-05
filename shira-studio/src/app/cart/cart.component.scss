@@ -1,5 +1,24 @@
 #cart-container {
   display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+#cart-header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  h2 {
+    margin-bottom: 0;
+  }
+  h4 {
+    margin-right: 10px;
+    margin-bottom: 0;
+  }
+}
+
+#cart-body {
+  display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
 }

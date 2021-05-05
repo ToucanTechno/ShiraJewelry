@@ -1,0 +1,35 @@
+<div id="container">
+  <mat-toolbar color="primary">
+    <mat-toolbar-row class="title-row">
+      <span class="title">{{title}}</span>
+      <nav mat-tab-nav-bar>
+        <a mat-tab-link [matMenuTriggerFor]="menu1" active="active" disableRipple>
+          Category 1
+          <mat-menu #menu1="matMenu">
+            <button mat-menu-item><span>Option 1</span></button>
+            <button mat-menu-item><span>Option 2</span></button>
+          </mat-menu>
+        </a>
+        <a mat-tab-link [matMenuTriggerFor]="menu2" disableRipple>
+          Category 2
+          <mat-menu #menu2="matMenu">
+            <button mat-menu-item><span>Option 3</span></button>
+            <button mat-menu-item><span>Option 4</span></button>
+          </mat-menu>
+        </a>
+      </nav>
+      <span class="title-row-actions">
+    </span>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <div id="body-container">
+    <router-outlet></router-outlet>
+  </div> <!-- #body-container -->
+  <mat-toolbar id="footer" color="primary">
+    <span id="footer-copyright">&#169;2021 Shira Studio</span>
+    <span id="footer-icons">
+    <mat-icon>contact_support</mat-icon>
+    <mat-icon>share</mat-icon>
+  </span>
+  </mat-toolbar>
+</div> <!-- #container -->

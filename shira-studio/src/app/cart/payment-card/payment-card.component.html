@@ -1,1 +1,14 @@
-<mat-card id="cart-payment" class="spaced"></mat-card>
+<mat-card id="cart-payment" class="spaced">
+  <span>How you'll pay</span>
+  <br>
+  <mat-radio-group aria-label="How you'll pay">
+    <mat-radio-button value="1">
+      <mat-icon>credit_card</mat-icon>
+    </mat-radio-button>
+    <mat-radio-button value="2">
+      <img src="assets/images/paypal-54-675727.png" alt="">
+    </mat-radio-button>
+  </mat-radio-group>
+  <span>Item(s) total:</span><span id="total-payment">$23.34</span>
+  <button mat-flat-button color="primary">Proceed to Checkout</button>
+</mat-card>
