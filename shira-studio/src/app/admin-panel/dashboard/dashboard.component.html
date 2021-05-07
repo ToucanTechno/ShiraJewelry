@@ -1,35 +1,49 @@
 <div id="dashboard-container">
   <div id="summary-row">
-    <div class="summary-cell">
+    <mat-card class="summary-cell">
       <mat-icon class="summary-icon">account_balance</mat-icon>
       <div><span>Mothly Income</span></div>
-    </div>
-    <div class="summary-cell">
+    </mat-card>
+    <mat-card class="summary-cell">
       <mat-icon class="summary-icon">account_balance</mat-icon>
       <div><span>Mothly Users</span></div>
-    </div>
-    <div class="summary-cell">
+    </mat-card>
+    <mat-card class="summary-cell">
       <mat-icon class="summary-icon">account_balance</mat-icon>
       <div><span>Mothly Clients</span></div>
-    </div>
-    <div class="summary-cell">
+    </mat-card>
+    <mat-card class="summary-cell">
       <mat-icon class="summary-icon">account_balance</mat-icon>
       <div><span>Mothly Likes</span></div>
-    </div>
+    </mat-card>
   </div>
   <div id="statistics-row">
-    <div id="active-users">
-
-    </div>
-    <div id="sales-overview">
-
-    </div>
+    <mat-card id="active-users">
+      Active
+      TODO: Use ngx-charts - advanced pie chart
+    </mat-card>
+    <mat-card id="sales-overview">
+      Sales
+      TODO: Use ngx-charts stacked vertical bar chart
+    </mat-card>
   </div>
   <div id="actions-row">
-    <div>Add Item</div>
-    <div>Show Categories List</div>
-    <div>Show Category Items</div>
-    <div>Modify Pages</div>
+    <mat-card>
+      <mat-icon>add</mat-icon>
+      <h3>Add Item</h3>
+    </mat-card>
+    <mat-card>
+      <mat-icon>category</mat-icon>
+      <h3>Categories List</h3>
+    </mat-card>
+    <mat-card>
+      <mat-icon>storefront</mat-icon>
+      <h3>Category Items</h3>
+    </mat-card>
+    <mat-card>
+      <mat-icon>mode_edit</mat-icon>
+      <h3>Modify Pages</h3>
+    </mat-card>
   </div>
   <!-- TODO: Live Row -->
 </div>
