@@ -11,11 +11,19 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
+import {UpdateJewelryComponent} from './admin-panel/update-jewelry/update-jewelry.component';
+import {UpdateCategoryComponent} from './admin-panel/update-category/update-category.component';
+import {JewelryListComponent} from './admin-panel/jewelry-list/jewelry-list.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 
 @NgModule({
   declarations: [
     AdminPanelComponent,
-    DashboardComponent
+    DashboardComponent,
+    UpdateJewelryComponent,
+    UpdateCategoryComponent,
+    JewelryListComponent
   ],
   imports: [
     BrowserModule,
@@ -26,7 +34,9 @@ import {MatCardModule} from '@angular/material/card';
     MatToolbarModule,
     MatMenuModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AdminPanelComponent]
