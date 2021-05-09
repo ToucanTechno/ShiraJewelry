@@ -5,7 +5,9 @@ import {DashboardComponent} from './admin-panel/dashboard/dashboard.component';
 import {UpdateJewelryComponent} from './admin-panel/update-jewelry/update-jewelry.component';
 
 const routes: Routes = [
-  { path: 'admin', children: [
+  {
+    path: 'admin',
+    children: [
       { path: 'add', component: UpdateJewelryComponent },
       { path: '', component: DashboardComponent }
     ]

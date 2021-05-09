@@ -1,0 +1,23 @@
+mat-card {
+  width: 80%;
+  margin: 20px auto;
+}
+
+.form-field {
+  width: 100%;
+  margin: 20px 20px 0;
+  button {
+    padding: 8px;
+    margin: 10px;
+  }
+}
+
+.number-field {
+  input {
+    text-align: right;
+    -moz-appearance: textfield;
+  }
+  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    display: none;
+  }
+}
