@@ -8,10 +8,10 @@ import {SelectionModel} from '@angular/cdk/collections';
 })
 export class JewelryListComponent implements OnInit {
 
-  selection: SelectionModel<JewelryEntry>[];
+  selection: SelectionModel<JewelryEntry>;
   jewelryList = [
-    {id: '1', name: 'hello', price: 123, image: 'b'},
-    {id: '2', name: 'what', price: 9191919, image: 'a'}
+    {id: 1, name: 'hello', price: 123, image: 'b'},
+    {id: 2, name: 'what', price: 9191919, image: 'a'}
   ];
   jewelryTableColumns = ['select', 'id', 'name', 'price', 'image'];
 
@@ -24,6 +24,19 @@ export class JewelryListComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected(): boolean {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.jewelryList.length;
+    return numSelected == numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle(): void {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.jewelryList.forEach(row => this.selection.select(row));
+  }
 }
 
 class JewelryEntry {

@@ -25,8 +25,6 @@ const PORT = 3000
   });*/
 
 DBSession.build().then((dbSession) => {
-  console.log(dbSession);
-
   // TODO: Add authentication middleware that validates cookies, except for the login/signup requests
 
   // TODO: Remove handling /
@@ -34,8 +32,11 @@ DBSession.build().then((dbSession) => {
     res.send('Hello World!')
   })
 
+  app.use(express.urlencoded({ extended: false }));
+
   app.use('/products', (req, res, next) => {
-    return productsRouter
+    req.locals = { dbSession: dbSession };
+    productsRouter(req, res, next);
   });
 
   app.listen(PORT, () => {
