@@ -1,6 +1,14 @@
 const express = require('express');
-let productsRouter = express.Router();
 const productsModel = require('../model/products-model');
+const cors = require("cors");
+
+let productsRouter = express.Router();
+const SERVER_HOSTNAME = 'http://localhost:4201';
+
+// TODO: Remove in production
+productsRouter.use(cors({ origin: SERVER_HOSTNAME }));
+
+productsRouter.use(express.json());
 
 productsRouter.get('/:id([0-9]+)', (req, res) => {
   productsModel.getProduct(req.locals.dbSession, parseInt(req.params.id))
@@ -30,6 +38,7 @@ productsRouter.post('/', (req, res) => {
     req.body.display_name_en,
     req.body.image_path,
     req.body.price);
+  console.log(product);
   productsModel.addProduct(req.locals.dbSession, product)
     .then((lastInsertedID) => {
       res.json({insertedID: lastInsertedID});

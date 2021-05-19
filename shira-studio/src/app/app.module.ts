@@ -56,10 +56,6 @@ import { UpdateCategoryComponent } from './admin-panel/update-category/update-ca
     CartContentsComponent,
     PaymentCardComponent,
     SigninComponent,
-    UpdateJewelryComponent,
-    CategoriesListComponent,
-    JewelryListComponent,
-    UpdateCategoryComponent
   ],
   imports: [
     BrowserModule,

@@ -127,7 +127,7 @@
     "admin": {
       "projectType": "application",
       "schematics": {},
-      "root": "admin",
+      "root": "",
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
