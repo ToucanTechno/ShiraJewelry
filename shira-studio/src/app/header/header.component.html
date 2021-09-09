@@ -2,20 +2,22 @@
   <mat-toolbar-row class="title-row">
     <span class="title">{{title}}</span>
     <nav mat-tab-nav-bar>
-      <a mat-tab-link [matMenuTriggerFor]="menu1" active="active" disableRipple>
-        Category 1
-        <mat-menu #menu1="matMenu">
-          <button mat-menu-item><span>Option 1</span></button>
-          <button mat-menu-item><span>Option 2</span></button>
-        </mat-menu>
+      <a mat-tab-link
+         (click)="activeLink = link.selfLink.name"
+         [matMenuTriggerFor]="appMenu" [matMenuTriggerData]="link"
+         [active]="activeLink == link.selfLink.name"
+         (mouseenter)="triggersDict[link.menuName].openMenu()"
+         disableRipple
+         *ngFor="let link of links">
+        {{ link.selfLink.name }}
       </a>
-      <a mat-tab-link [matMenuTriggerFor]="menu2" disableRipple>
-        Category 2
-        <mat-menu #menu2="matMenu">
-          <button mat-menu-item><span>Option 3</span></button>
-          <button mat-menu-item><span>Option 4</span></button>
-        </mat-menu>
-      </a>
+      <mat-menu hasBackdrop="false" #appMenu="matMenu">
+        <ng-template matMenuContent let-childLinks="childLinks" let-menuName="menuName">
+          <span (mouseleave)="triggersDict[menuName].closeMenu()">
+            <button *ngFor="let childLink of childLinks" mat-menu-item><span>{{ childLink.name }}</span></button>
+          </span>
+        </ng-template>
+      </mat-menu>
     </nav>
     <span class="title-row-actions">
       <mat-form-field floatLabel="never">

@@ -33,10 +33,6 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatButtonModule} from '@angular/material/button';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import { UpdateJewelryComponent } from './admin-panel/update-jewelry/update-jewelry.component';
-import { CategoriesListComponent } from './admin-panel/categories-list/categories-list.component';
-import { JewelryListComponent } from './admin-panel/jewelry-list/jewelry-list.component';
-import { UpdateCategoryComponent } from './admin-panel/update-category/update-category.component';
 
 @NgModule({
   declarations: [

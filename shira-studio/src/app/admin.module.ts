@@ -21,6 +21,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {HttpClientModule} from '@angular/common/http';
+import {CategoriesListComponent} from './admin-panel/categories-list/categories-list.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import {HttpClientModule} from '@angular/common/http';
     DashboardComponent,
     UpdateJewelryComponent,
     UpdateCategoryComponent,
-    JewelryListComponent
+    JewelryListComponent,
+    CategoriesListComponent
   ],
   imports: [
     BrowserModule,
