@@ -6,14 +6,15 @@
          (click)="activeLink = link.selfLink.name"
          [matMenuTriggerFor]="appMenu" [matMenuTriggerData]="link"
          [active]="activeLink == link.selfLink.name"
-         (mouseenter)="triggersDict[link.menuName].openMenu()"
+         (mouseenter)="enterMenuHeader(link.menuName)"
+         (mouseleave)="leaveMenuHeader(link.menuName)"
          disableRipple
          *ngFor="let link of links">
         {{ link.selfLink.name }}
       </a>
       <mat-menu hasBackdrop="false" #appMenu="matMenu">
         <ng-template matMenuContent let-childLinks="childLinks" let-menuName="menuName">
-          <span (mouseleave)="triggersDict[menuName].closeMenu()">
+          <span (mouseenter)="enterMenuBody(menuName)" (mouseleave)="leaveMenuBody(menuName)">
             <button *ngFor="let childLink of childLinks" mat-menu-item><span>{{ childLink.name }}</span></button>
           </span>
         </ng-template>

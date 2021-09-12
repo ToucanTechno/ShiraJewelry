@@ -12,6 +12,12 @@ interface MenuLinks {
   childLinks: CategoryLink[];
 }
 
+enum MenuState {
+  Header,
+  Body,
+  Outside
+}
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -20,6 +26,7 @@ interface MenuLinks {
 export class HeaderComponent implements OnInit, AfterViewInit {
   @ViewChildren(MatMenuTrigger) triggers: QueryList<MatMenuTrigger>;
   triggersDict: {};
+  menuStates: {} = {};
 
   title = 'Shira Studio';
   searchText = '';
@@ -40,7 +47,34 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.triggersDict = this.triggers.reduce((map, trigger) => { map[trigger.menuData.menuName] = trigger; return map; }, {});
+    this.triggersDict = this.triggers.reduce((map, trigger) => {
+        map[trigger.menuData.menuName] = trigger;
+        return map;
+      },
+      {});
     console.log(this.triggersDict);
+  }
+
+  enterMenuHeader(menuName): void {
+    this.menuStates[menuName] = MenuState.Header;
+    setTimeout(() => this.triggersDict[menuName].openMenu(), 100);
+  }
+  leaveMenuHeader(menuName): void {
+    this.menuStates[menuName] = MenuState.Outside;
+    setTimeout(this.leaveMenuCallback, 100, this, menuName);
+  }
+  enterMenuBody(menuName): void {
+    this.menuStates[menuName] = MenuState.Body;
+    this.triggersDict[menuName].openMenu();
+  }
+  leaveMenuBody(menuName): void {
+    this.menuStates[menuName] = MenuState.Outside;
+    setTimeout(this.leaveMenuCallback, 100, this, menuName);
+  }
+
+  leaveMenuCallback(self, menuName): void {
+    if (self.menuStates[menuName] === MenuState.Outside) {
+      self.triggersDict[menuName].closeMenu();
+    }
   }
 }
