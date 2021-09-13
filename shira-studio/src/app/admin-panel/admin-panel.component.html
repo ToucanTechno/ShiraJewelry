@@ -3,20 +3,54 @@
     <mat-toolbar-row class="title-row">
       <span class="title">{{title}}</span>
       <nav mat-tab-nav-bar>
+        <a mat-tab-link
+           (click)="hoverMenuService.activeLink = link.name"
+           [matMenuTriggerFor]="appMenu" [matMenuTriggerData]="link"
+           [active]="hoverMenuService.activeLink == link.name"
+           (mouseenter)="hoverMenuService.enterMenuHeader(link.menuName)"
+           (mouseleave)="hoverMenuService.leaveMenuHeader(link.menuName)"
+           [routerLink]="[]"
+           disableRipple
+           *ngFor="let link of links">
+          {{ link.name }}
+        </a>
+        <mat-menu hasBackdrop="false" #appMenu="matMenu">
+          <ng-template matMenuContent let-childLinks="childLinks" let-name="name" let-menuName="menuName">
+          <span (mouseenter)="hoverMenuService.enterMenuBody(menuName)" (mouseleave)="hoverMenuService.leaveMenuBody(menuName)">
+            <button *ngFor="let childLink of childLinks"
+                    mat-menu-item
+                    (click)="hoverMenuService.activeLink = name"
+                    [routerLink]="[childLink.url]">
+              <span>{{ childLink.name }}</span>
+            </button>
+          </span>
+          </ng-template>
+        </mat-menu>
+        <!--
         <a mat-tab-link [matMenuTriggerFor]="menu1" active="active" disableRipple>
-          Category 1
+          הוסף
           <mat-menu #menu1="matMenu">
-            <button mat-menu-item><span>Option 1</span></button>
-            <button mat-menu-item><span>Option 2</span></button>
+            <button mat-menu-item><span>קטגוריה</span></button>
+            <button mat-menu-item><span>מוצר</span></button>
           </mat-menu>
         </a>
         <a mat-tab-link [matMenuTriggerFor]="menu2" disableRipple>
-          Category 2
+          ערוך
           <mat-menu #menu2="matMenu">
-            <button mat-menu-item><span>Option 3</span></button>
-            <button mat-menu-item><span>Option 4</span></button>
+            <button mat-menu-item><span>קטגוריה</span></button>
+            <button mat-menu-item><span>מוצר</span></button>
           </mat-menu>
         </a>
+        <a mat-tab-link [matMenuTriggerFor]="menu3" disableRipple>
+          שונות
+          <mat-menu #menu3="matMenu">
+            <button mat-menu-item><span>עורך דף הבית</span></button>
+            <button mat-menu-item><span>כניסות</span></button>
+            <button mat-menu-item><span>משלוחים</span></button>
+            <button mat-menu-item><span>הודעות</span></button>
+          </mat-menu>
+        </a>
+        -->
       </nav>
       <span class="title-row-actions">
     </span>

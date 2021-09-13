@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {Currency, Product} from '../../models/product';
 
 @Component({
   selector: 'app-display-grid',
@@ -8,10 +9,17 @@ import {Component, Input, OnInit} from '@angular/core';
 export class DisplayGridComponent implements OnInit {
   @Input()
   categoryColumns: number;
+  @Input()
+  products: Product[];
+  @Input()
+  ourPicks: Product[];
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  public get currency(): typeof Currency {
+    return Currency;
+  }
 }

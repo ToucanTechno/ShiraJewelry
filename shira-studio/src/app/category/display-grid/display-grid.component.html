@@ -1,46 +1,22 @@
 <h1>Products</h1>
 <mat-grid-list [cols]="categoryColumns" rowHeight="200px">
-  <mat-grid-tile class="grid-tile">
+  <mat-grid-tile class="grid-tile"
+                 *ngFor="let product of products"
+                 [routerLink]="['/product', product.id]">
     <mat-grid-tile-header>
-      <span>$24.05</span>
+      <span>{{ (product.currency === currency.USD) ? '$' : '₪' }}{{ product.price }}</span>
     </mat-grid-tile-header>
-    <img src="assets/images/test_image1.jpg" alt="">
+    <img src="assets/images/{{ product.image_path }}" alt="">
   </mat-grid-tile>
-  <mat-grid-tile>
-    <mat-grid-tile-header>
-      <span>$24.05</span>
-    </mat-grid-tile-header>
-    <img src="assets/images/test_image1.jpg" alt="">
-  </mat-grid-tile>
-  <mat-grid-tile>
-    <mat-grid-tile-header>
-      <span>$24.05</span>
-    </mat-grid-tile-header>
-    <img src="assets/images/test_image1.jpg" alt="">
-  </mat-grid-tile>
-  <mat-grid-tile>4</mat-grid-tile>
-  <mat-grid-tile>5</mat-grid-tile>
 </mat-grid-list>
 <h1>Our Picks for You</h1>
 <mat-grid-list [cols]="categoryColumns" rowHeight="200px">
-  <mat-grid-tile class="grid-tile">
+  <mat-grid-tile class="grid-tile"
+                 *ngFor="let product of ourPicks"
+                 [routerLink]="['/product', product.id]">
     <mat-grid-tile-header>
-      <span>$24.05</span>
+      <span>{{ (product.currency === currency.USD) ? '$' : '₪' }}{{ product.price }}</span>
     </mat-grid-tile-header>
-    <img src="assets/images/test_image1.jpg" alt="">
+    <img src="assets/images/{{ product.image_path }}" alt="">
   </mat-grid-tile>
-  <mat-grid-tile>
-    <mat-grid-tile-header>
-      <span>$24.05</span>
-    </mat-grid-tile-header>
-    <img src="assets/images/test_image1.jpg" alt="">
-  </mat-grid-tile>
-  <mat-grid-tile>
-    <mat-grid-tile-header>
-      <span>$24.05</span>
-    </mat-grid-tile-header>
-    <img src="assets/images/test_image1.jpg" alt="">
-  </mat-grid-tile>
-  <mat-grid-tile>4</mat-grid-tile>
-  <mat-grid-tile>5</mat-grid-tile>
 </mat-grid-list>

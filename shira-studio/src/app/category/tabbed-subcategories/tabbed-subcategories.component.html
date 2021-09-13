@@ -1,29 +1,15 @@
 <h1>Subcategories</h1>
 <mat-tab-group animationDuration="500ms">
-  <mat-tab label="First">
+  <mat-tab *ngFor="let subcategory of subcategories" label="{{ subcategory.name }}">
     <mat-grid-list [cols]="categoryColumns" rowHeight="200px">
-      <mat-grid-tile class="grid-tile">
+      <mat-grid-tile *ngFor="let product of subcategory.products"
+                     class="grid-tile"
+                     [routerLink]="['/product', product.id]">
         <mat-grid-tile-header>
-          <span>$24.05</span>
+          <span>{{ (product.currency === currency.USD) ? '$' : '₪' }}{{ product.price }}</span>
         </mat-grid-tile-header>
-        <img src="assets/images/test_image1.jpg" alt="">
+        <img src="assets/images/{{ product.image_path }}" alt="">
       </mat-grid-tile>
-      <mat-grid-tile>
-        <mat-grid-tile-header>
-          <span>$24.05</span>
-        </mat-grid-tile-header>
-        <img src="assets/images/test_image1.jpg" alt="">
-      </mat-grid-tile>
-      <mat-grid-tile>
-        <mat-grid-tile-header>
-          <span>$24.05</span>
-        </mat-grid-tile-header>
-        <img src="assets/images/test_image1.jpg" alt="">
-      </mat-grid-tile>
-      <mat-grid-tile>4</mat-grid-tile>
-      <mat-grid-tile>5</mat-grid-tile>
     </mat-grid-list>
   </mat-tab>
-  <mat-tab label="Second"> Content 2 </mat-tab>
-  <mat-tab label="Third"> Content 3 </mat-tab>
 </mat-tab-group>

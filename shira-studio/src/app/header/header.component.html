@@ -1,21 +1,29 @@
 <mat-toolbar>
   <mat-toolbar-row class="title-row">
-    <span class="title">{{title}}</span>
+    <a class="title"
+       [routerLink]="['/']"
+       (click)="hoverMenuService.activeLink = ''">{{title}}</a>
     <nav mat-tab-nav-bar>
       <a mat-tab-link
-         (click)="activeLink = link.selfLink.name"
+         (click)="hoverMenuService.activeLink = link.selfLink.name"
          [matMenuTriggerFor]="appMenu" [matMenuTriggerData]="link"
-         [active]="activeLink == link.selfLink.name"
-         (mouseenter)="enterMenuHeader(link.menuName)"
-         (mouseleave)="leaveMenuHeader(link.menuName)"
+         [active]="hoverMenuService.activeLink == link.selfLink.name"
+         (mouseenter)="hoverMenuService.enterMenuHeader(link.menuName)"
+         (mouseleave)="hoverMenuService.leaveMenuHeader(link.menuName)"
+         [routerLink]="['/category', link.selfLink.id]"
          disableRipple
          *ngFor="let link of links">
         {{ link.selfLink.name }}
       </a>
       <mat-menu hasBackdrop="false" #appMenu="matMenu">
-        <ng-template matMenuContent let-childLinks="childLinks" let-menuName="menuName">
-          <span (mouseenter)="enterMenuBody(menuName)" (mouseleave)="leaveMenuBody(menuName)">
-            <button *ngFor="let childLink of childLinks" mat-menu-item><span>{{ childLink.name }}</span></button>
+        <ng-template matMenuContent let-childLinks="childLinks" let-menuName="menuName" let-selfLink="selfLink">
+          <span (mouseenter)="hoverMenuService.enterMenuBody(menuName)" (mouseleave)="hoverMenuService.leaveMenuBody(menuName)">
+            <button *ngFor="let childLink of childLinks"
+                    mat-menu-item
+                    (click)="hoverMenuService.activeLink = selfLink.name"
+                    [routerLink]="['/category', childLink.id]">
+              <span>{{ childLink.name }}</span>
+            </button>
           </span>
         </ng-template>
       </mat-menu>
@@ -25,9 +33,9 @@
         <input matInput placeholder="Search" [(ngModel)]="searchText">
         <mat-icon class="search-bar-icon" matSuffix>search</mat-icon>
       </mat-form-field>
-      <mat-icon>language</mat-icon>
-      <mat-icon>account_circle</mat-icon>
-      <mat-icon>shopping_cart</mat-icon>
+      <mat-icon class="icon_link">language</mat-icon>
+      <mat-icon class="icon_link" [routerLink]="['/login']">account_circle</mat-icon>
+      <mat-icon class="icon_link" [routerLink]="['/cart']">shopping_cart</mat-icon>
     </span>
   </mat-toolbar-row>
 </mat-toolbar>
