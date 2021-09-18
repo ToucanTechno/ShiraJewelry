@@ -1,7 +1,7 @@
 <div id="container">
   <mat-toolbar color="primary">
     <mat-toolbar-row class="title-row">
-      <span class="title">{{title}}</span>
+      <a class="title" [routerLink]="['/admin']">{{ title }}</a>
       <nav mat-tab-nav-bar>
         <a mat-tab-link
            (click)="hoverMenuService.activeLink = link.name"
@@ -20,7 +20,7 @@
             <button *ngFor="let childLink of childLinks"
                     mat-menu-item
                     (click)="hoverMenuService.activeLink = name"
-                    [routerLink]="[childLink.url]">
+                    [routerLink]="['admin', childLink.url]">
               <span>{{ childLink.name }}</span>
             </button>
           </span>

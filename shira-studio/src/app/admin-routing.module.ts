@@ -10,10 +10,11 @@ const routes: Routes = [
   {
     path: 'admin',
     children: [
-      { path: 'add-item', component: UpdateJewelryComponent },
-      { path: 'edit-item/:id', component: UpdateJewelryComponent },
-      { path: 'jewelry-list/:category', component: JewelryListComponent },
-      { path: 'categories-list', component: CategoriesListComponent },
+      { path: 'edit-item/:id', component: UpdateJewelryComponent, data: { type: 'edit' } },
+      { path: 'add-item', component: UpdateJewelryComponent, data: { type: 'add' } },
+      { path: 'edit-category/:category', component: JewelryListComponent, data: { type: 'edit' } },
+      { path: 'add-category', component: JewelryListComponent, data: { type: 'add' } },
+      { path: 'edit-categories', component: CategoriesListComponent },
       { path: '', component: DashboardComponent }
     ]
   }
