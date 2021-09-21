@@ -5,9 +5,9 @@ import {Observable, of} from 'rxjs';
 import {NgForm} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import {catchError} from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 // TODO: Put somewhere better, maybe in development environment
-const API_SERVER_URL = 'http://localhost:3000';
 
 @Component({
   selector: 'app-update-jewelry',
@@ -48,7 +48,7 @@ export class UpdateJewelryComponent implements OnInit {
 
   addProduct(productForm: NgForm, imagePath: string): void {
     console.log(productForm);
-    this.http.post(API_SERVER_URL + '/products',
+    this.http.post(environment.API_SERVER_URL + '/products',
       {
         name: productForm.form.value.product_name,
         description_he: productForm.form.value.description,
@@ -59,13 +59,13 @@ export class UpdateJewelryComponent implements OnInit {
         price: productForm.form.value.price
       }, { responseType: 'json' })
       .pipe(catchError((e) => of(console.log(e))))
-      .subscribe((res: FormResponse) => {
+      .subscribe((res: ProductFormResponse) => {
         console.log(res.insertedID);
         // TODO: Redirect somewhere better
       });
   }
 }
 
-interface FormResponse {
+interface ProductFormResponse {
   insertedID: number;
 }

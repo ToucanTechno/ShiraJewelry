@@ -1,1 +1,37 @@
-<p>update-category works!</p>
+<mat-card>
+  <h1>Add a Category</h1>
+  <form #categoryForm=ngForm (ngSubmit)="onSubmit(categoryForm)">
+    <div class="form-field">
+      <mat-form-field appearance="fill">
+        <mat-label>Title</mat-label>
+        <input matInput ngModel name="category_name" placeholder="Category Name">
+      </mat-form-field>
+    </div>
+    <div class="form-field">
+      <mat-label>Preview Image</mat-label>
+      <input matInput type="file" id="browse-button" (change)="handleFileInput($event.target.files)">
+      TODO: Add image preview
+    </div>
+    <div class="form-field">
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea matInput ngModel name="description" placeholder="Category description..."></textarea>
+      </mat-form-field>
+    </div>
+    <div class="form-field">
+      <mat-form-field>
+        <mat-label>Parent Category</mat-label>
+        <select matNativeControl ngModel name="category" required>
+          <option value="brooches">Brooches</option>
+          <option value="paintings">Paintings</option>
+        </select>
+      </mat-form-field>
+    </div>
+    <div>
+      TODO: Labels
+    </div>
+    <div class="form-field">
+      <button type="submit" mat-raised-button color="accent">Submit</button>
+    </div>
+  </form>
+</mat-card>
