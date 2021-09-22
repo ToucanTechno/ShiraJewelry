@@ -6,6 +6,7 @@ import {Observable, of} from 'rxjs';
 import {NgForm} from '@angular/forms';
 import {environment} from '../../../environments/environment';
 import {catchError} from 'rxjs/operators';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-update-category',
@@ -16,7 +17,9 @@ export class UpdateCategoryComponent implements OnInit {
   uploadedFile: File = null;
   uploadedFileCrc: string = null;
 
-  constructor(private fileUploadService: FileUploadService, private http: HttpClient) { }
+  constructor(private fileUploadService: FileUploadService,
+              private http: HttpClient,
+              private route: Router) { }
 
   ngOnInit(): void {
   }
@@ -46,6 +49,7 @@ export class UpdateCategoryComponent implements OnInit {
 
   addCategory(categoryForm: NgForm, imagePath: string): void {
     console.log(categoryForm);
+    let route = this.route;
     this.http.post(environment.API_SERVER_URL + '/categories',
       {
         name: categoryForm.form.value.category_name,
@@ -60,6 +64,7 @@ export class UpdateCategoryComponent implements OnInit {
       .subscribe((res: CategoryFormResponse) => {
         console.log(res.insertedID);
         // TODO: Redirect somewhere better
+        route.navigate(['/admin']);
       });
   }
 }

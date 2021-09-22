@@ -18,8 +18,7 @@ class Category {
     this.displayNameEN = displayNameEN;
     this.imagePath = imagePath;
     this.parentCategoryPromise = getCategoryByName(dbSession, parentCategoryName).then((category) => {
-      console.log(category);
-      this.parentCategoryID = (category === undefined) ? -1 : category.id;
+      this.parentCategoryID = (category === undefined) ? null : category.id;
     });
   }
 };
@@ -51,7 +50,6 @@ function getCategoryByName(dbSession, categoryName) {
 function addCategory(dbSession, category) {
   // TODO: Validate there are no parent category circles
   let table = dbSession.getTable('categories');
-  console.log(category.parentCategoryID);
   return table.insert(
     'name', 'description_he', 'description_en', 'display_name_he', 'display_name_en', 'image_path', 'parent_category_id')
     .values(
@@ -62,13 +60,13 @@ function addCategory(dbSession, category) {
       category.displayNameEN,
       category.imagePath,
       category.parentCategoryID)
-    .execute().catch((err) => {console.log(err)})
+    .execute()
     .then((res) => {
       if (res.getAffectedItemsCount() == 0) {
         throw "No items were added"
       }
       return res.getAutoIncrementValue();
-    })
+    }).catch((err) => {console.log("Error: ", err)})  // TODO: Improve catch mechanism
 }
 
 function updateCategoryByID(dbSession, categoryId, newCategory) {

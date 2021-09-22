@@ -40,7 +40,6 @@ categoriesRouter.post('/', (req, res) => {
     req.body.image_path,
     req.body.parent_category_name);
   category.parentCategoryPromise.then(() => {
-    console.log(category);
     categoriesModel.addCategory(req.locals.dbSession, category)
       .then((lastInsertedID) => {
         res.json({insertedID: lastInsertedID});
