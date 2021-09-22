@@ -22,6 +22,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {HttpClientModule} from '@angular/common/http';
 import {CategoriesListComponent} from './admin-panel/categories-list/categories-list.component';
+import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -32,24 +33,25 @@ import {CategoriesListComponent} from './admin-panel/categories-list/categories-
     JewelryListComponent,
     CategoriesListComponent
   ],
-  imports: [
-    BrowserModule,
-    RouterModule,
-    AdminRoutingModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    MatToolbarModule,
-    MatMenuModule,
-    MatIconModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatCheckboxModule,
-    HttpClientModule
-  ],
+    imports: [
+        BrowserModule,
+        RouterModule,
+        AdminRoutingModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        MatToolbarModule,
+        MatMenuModule,
+        MatIconModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatCheckboxModule,
+        HttpClientModule,
+        MatTabsModule
+    ],
   providers: [],
   bootstrap: [AdminPanelComponent]
 })

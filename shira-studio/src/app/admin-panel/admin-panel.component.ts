@@ -13,18 +13,18 @@ export class AdminPanelComponent implements OnInit, AfterViewInit {
   title = 'Admin Panel';
   links: {}[] = [
     { name: 'שונות', menuName: 'menu1', url: undefined, childLinks: [
-        { name: 'עורך דף הבית', url: '/edit-homepage' },
-        { name: 'כניסות', url: '/entry-statistics' },
-        { name: 'משלוחים', url: '/deliveries' },
-        { name: 'הודעות', url: '/messages' }
+        { name: 'עורך דף הבית', url: 'edit-homepage' },
+        { name: 'כניסות', url: 'entry-statistics' },
+        { name: 'משלוחים', url: 'deliveries' },
+        { name: 'הודעות', url: 'messages' }
       ]},
     { name: 'הוסף', menuName: 'menu2', url: undefined, childLinks: [
-        { name: 'הוסף קטגוריה', url: '/add-category' },
-        { name: 'הוסף מוצר', url: '/add-item' }
+        { name: 'הוסף קטגוריה', url: 'add-category' },
+        { name: 'הוסף מוצר', url: 'add-item' }
       ]},
     { name: 'ערוך', menuName: 'menu3', url: undefined, childLinks: [
-        { name: 'ערוך קטגוריות', url: '/edit-categories' },
-        { name : 'ערוך מוצרים', url: '/edit-category/all' } // TODO: edit category
+        { name: 'ערוך קטגוריות', url: 'edit-categories' },
+        { name : 'ערוך מוצרים', url: 'edit-items' } // TODO: edit category
       ]}
   ];
 

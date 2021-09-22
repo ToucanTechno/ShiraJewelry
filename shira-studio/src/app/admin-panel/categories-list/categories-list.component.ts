@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {SelectionModel} from '@angular/cdk/collections';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-categories-list',
@@ -15,12 +16,13 @@ export class CategoriesListComponent implements OnInit {
   ];
   categoriesTableColumns = ['select', 'id', 'categoryName', 'image', 'actions'];
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     const initialSelection = [];
     const allowMultiSelect = true;
     this.selection = new SelectionModel<CategoriesEntry>(allowMultiSelect, initialSelection);
+    this.categoriesList = this.http.get<CategoriesEntry[]>('http://localhost:3000/categories');
   }
 
   /** Whether the number of selected elements matches the total number of rows. */

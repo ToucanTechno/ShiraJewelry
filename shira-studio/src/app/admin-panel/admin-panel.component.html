@@ -9,7 +9,7 @@
            [active]="hoverMenuService.activeLink == link.name"
            (mouseenter)="hoverMenuService.enterMenuHeader(link.menuName)"
            (mouseleave)="hoverMenuService.leaveMenuHeader(link.menuName)"
-           [routerLink]="[]"
+           [routerLink]="(link.url === undefined) ? [] : ['/admin', link.url]"
            disableRipple
            *ngFor="let link of links">
           {{ link.name }}
