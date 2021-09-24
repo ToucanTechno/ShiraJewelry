@@ -8,4 +8,19 @@ interface Category {
   ourPicks: Product[];
 }
 
-export {Category};
+class CategoryEntry {
+  id: number;
+  name: string;
+  descriptionHe: string;
+  descriptionEn: string;
+  displayNameHe: string;
+  displayNameEn: string;
+  imagePath: string;
+  parentCategoryId: number;
+  isVisible: string;
+  parentCategoryName: string;
+
+  constructor() {}
+}
+
+export {Category, CategoryEntry};

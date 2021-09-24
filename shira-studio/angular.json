@@ -142,7 +142,8 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {"glob":  "*", "input": "uploads/product_images", "output": "/product_images"}
             ],
             "styles": [
               "src/custom-theme.scss",

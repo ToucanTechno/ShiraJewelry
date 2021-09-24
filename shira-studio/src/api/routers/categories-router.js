@@ -59,8 +59,9 @@ categoriesRouter.post('/:id([0-9]+)', (req, res, next) => {
 
 categoriesRouter.put('/:id([0-9]+)', (req, res) => {
   req.body.price = parseInt(req.body.price);
-  const Category = new categoriesModel.Category(
-    null,
+  const category = new categoriesModel.Category(
+    req.locals.dbSession,
+    undefined,
     req.body.name,
     req.body.description_he,
     req.body.description_en,
@@ -68,10 +69,13 @@ categoriesRouter.put('/:id([0-9]+)', (req, res) => {
     req.body.display_name_en,
     req.body.image_path,
     req.body.price);
-  categoriesModel.updateCategoryByID(req.locals.dbSession, parseInt(req.params.id), category)
-    .then((affectedItemsCount) => {
-      res.json({ affectedItemsCount: affectedItemsCount });
-    })
+  category.parentCategoryPromise.then(() => {
+    categoriesModel.updateCategoryByID(req.locals.dbSession, parseInt(req.params.id), category)
+      .then((affectedItemsCount) => {
+        console.log(category);
+        res.json({ affectedItemsCount: affectedItemsCount });
+      })
+  });
 });
 
 categoriesRouter.delete('/:id([0-9]+)', (req, res) => {

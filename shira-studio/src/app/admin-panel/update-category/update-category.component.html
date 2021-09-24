@@ -1,29 +1,46 @@
 <mat-card>
-  <h1>Add a Category</h1>
+  <h1>{{ title }}</h1>
+  <!-- TODO: Make sure all fields are properly filled -->
   <form #categoryForm=ngForm (ngSubmit)="onSubmit(categoryForm)">
     <div class="form-field">
       <mat-form-field appearance="fill">
-        <mat-label>Title</mat-label>
-        <input matInput ngModel name="category_name" placeholder="Category Name">
+        <mat-label>Category Name</mat-label>
+        <input matInput [(ngModel)]="editedCategoryData.displayNameEn" name="category_name" placeholder="Category Name">
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="foreign-language-field">
+        <mat-label>שם קטגוריה בעברית</mat-label>
+        <input matInput [(ngModel)]="editedCategoryData.displayNameHe" name="category_name_he" placeholder="שם קטגוריה בעברית">
       </mat-form-field>
     </div>
     <div class="form-field">
-      <mat-label>Preview Image</mat-label>
-      <input matInput type="file" id="browse-button" (change)="handleFileInput($event.target.files)">
-      TODO: Add image preview
+      <mat-label><h3>Preview Image: </h3></mat-label>
+      <input matInput
+             type="file"
+             id="browse-button"
+             name="image_preview"
+             (change)="handleFileInput($event.target.files)">
+      <img *ngIf="routeType == 'edit' || uploadedFileURL !== null"
+           [src]="getEditedImagePath()"
+           alt="Image Preview"
+           class="image-preview">
     </div>
     <div class="form-field">
       <mat-form-field>
         <mat-label>Description</mat-label>
-        <textarea matInput ngModel name="description" placeholder="Category description..."></textarea>
+        <textarea matInput [(ngModel)]="editedCategoryData.descriptionEn" name="description" placeholder="Category description..."></textarea>
+      </mat-form-field>
+      <mat-form-field class="foreign-language-field">
+        <mat-label>תיאור בעברית</mat-label>
+        <textarea matInput [(ngModel)]="editedCategoryData.descriptionHe" name="description_he" placeholder="תיאור הקטגוריה..."></textarea>
       </mat-form-field>
     </div>
     <div class="form-field">
       <mat-form-field>
+        <!-- TODO: Change selected if edited -->
         <mat-label>Parent Category</mat-label>
-        <select matNativeControl ngModel name="category" required>
-          <option value="brooches">Brooches</option>
-          <option value="paintings">Paintings</option>
+        <select matNativeControl [(ngModel)]="editedCategoryData.parentCategoryName" name="category" required>
+          <option value="">-</option>
+          <option  *ngFor="let category of dbCategories$ | async" value="{{ category.name }}">{{ category.displayNameHe }}</option>
         </select>
       </mat-form-field>
     </div>
@@ -31,7 +48,7 @@
       TODO: Labels
     </div>
     <div class="form-field">
-      <button type="submit" mat-raised-button color="accent">Submit</button>
+      <button type="submit" mat-raised-button color="accent">{{ routeType == 'edit' ? 'Edit' : 'Add' }}</button>
     </div>
   </form>
 </mat-card>

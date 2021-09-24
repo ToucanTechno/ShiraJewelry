@@ -17,6 +17,7 @@ import { environment } from '../../../environments/environment';
 export class UpdateJewelryComponent implements OnInit {
   uploadedFile: File = null;
   uploadedFileCrc: string = null;
+  uploadedFileURL: string = null;
 
   constructor(private fileUploadService: FileUploadService, private http: HttpClient) { }
 
@@ -25,7 +26,23 @@ export class UpdateJewelryComponent implements OnInit {
 
   handleFileInput(files: FileList): void {
     this.uploadedFileCrc = null;
+    this.uploadedFileURL = null;
+    if (files.length === 0) {  // Upon cancel
+      return;
+    }
     this.uploadedFile = files.item(0);
+    // Illegal file, avoid accessing it in the future, TODO: add uploaded files security
+    if (this.uploadedFile.type.match(/image\/*/) == null) {
+      files = new FileList();
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(this.uploadedFile);
+    reader.onload = (event) => {
+      this.uploadedFileURL = (reader.result as string);
+    };
+
     this.uploadedFile.arrayBuffer().then((buf) => {
       this.uploadedFileCrc = crc32(buf).toString(16);
     });

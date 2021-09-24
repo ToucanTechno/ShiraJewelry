@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import {Observable, of} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import {catchError, map} from 'rxjs/operators';
-
-const API_SERVER_URL = 'http://localhost:3000';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,7 @@ export class FileUploadService {
   postFile(file: File, fileCrc: string): Observable<string> {
     const format = file.type.split('/')[1];
     const filename = fileCrc + '.' + format;
-    const endpoint = API_SERVER_URL + '/upload';
+    const endpoint = environment.API_SERVER_URL + '/upload';
     const formData: FormData = new FormData();
     formData.append('productImage', file, filename);
     // TODO: base64 encode

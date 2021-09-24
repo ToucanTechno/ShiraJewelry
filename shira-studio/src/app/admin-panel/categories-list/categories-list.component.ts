@@ -3,6 +3,8 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { HttpClient } from '@angular/common/http';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
+import {CategoryEntry} from '../../models/category';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-categories-list',
@@ -11,21 +13,21 @@ import {MatPaginator} from '@angular/material/paginator';
 })
 export class CategoriesListComponent implements AfterViewInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  selection: SelectionModel<CategoriesEntry>;
-  dataSource: MatTableDataSource<CategoriesEntry> = new MatTableDataSource<CategoriesEntry>();
-  categoriesTableColumns = ['id', 'name']; //['select', 'id', 'categoryName', 'image', 'actions'];
+  selection: SelectionModel<CategoryEntry>;
+  dataSource: MatTableDataSource<CategoryEntry> = new MatTableDataSource<CategoryEntry>();
+  categoriesTableColumns = ['select', 'id', 'displayNameEn', 'displayNameHe', 'imagePath', 'actions'];
 
   constructor(private http: HttpClient) {}
 
   ngAfterViewInit(): void {
     // TODO: move the get request earlier
-    this.http.get<CategoriesEntry[]>('http://localhost:3000/categories').subscribe({
-      next: (data: CategoriesEntry[]) => {
+    this.http.get<CategoryEntry[]>(environment.API_SERVER_URL + '/categories').subscribe({
+      next: (data: CategoryEntry[]) => {
         this.dataSource.data = data;
         this.dataSource.paginator = this.paginator;
         const initialSelection = [];
         const allowMultiSelect = true;
-        this.selection = new SelectionModel<CategoriesEntry>(allowMultiSelect, initialSelection);
+        this.selection = new SelectionModel<CategoryEntry>(allowMultiSelect, initialSelection);
       },
       error: (error) => {
         console.error(error);
@@ -47,16 +49,4 @@ export class CategoriesListComponent implements AfterViewInit {
       this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
-}
-
-class CategoriesEntry {
-  id: number;
-  name: string;
-  descriptionHe: string;
-  descriptionEn: string;
-  displayNameHe: string;
-  displayNameEn: string;
-  imagePath: string;
-  parentCategoryId: number;
-  isVisible: string;
 }
