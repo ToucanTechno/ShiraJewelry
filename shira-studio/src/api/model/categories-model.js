@@ -27,7 +27,20 @@ function getAllCategories(dbSession, count = 10, offset = 0) {
   const table = dbSession.getTable('categories');
   return table.select().limit(count, offset).execute()
     .then((res) => {
-      return res.fetchAll();
+      entries = res.fetchAll();
+      return entries.map((data) => {
+        return {
+          id: data[0],
+          name: data[1],
+          descriptionHe: data[2],
+          descriptionEn: data[3],
+          displayNameHe: data[4],
+          displayNameEn: data[5],
+          imagePath: data[6],
+          parentCategoryId: data[7],
+          isVisible: data[8]
+        };
+      })
     });
 }
 

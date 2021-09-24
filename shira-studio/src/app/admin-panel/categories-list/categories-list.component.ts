@@ -1,42 +1,50 @@
-import { Component, OnInit } from '@angular/core';
-import {SelectionModel} from '@angular/cdk/collections';
-import {HttpClient} from '@angular/common/http';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
+import { HttpClient } from '@angular/common/http';
+import {MatTableDataSource} from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
 
 @Component({
   selector: 'app-categories-list',
   templateUrl: './categories-list.component.html',
   styleUrls: ['./categories-list.component.scss']
 })
-export class CategoriesListComponent implements OnInit {
-
+export class CategoriesListComponent implements AfterViewInit {
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   selection: SelectionModel<CategoriesEntry>;
-  categoriesList = [
-    {id: 1, name: 'hello', image: '123.jpg'},
-    {id: 2, name: 'what', image: '456.jpg'}
-  ];
-  categoriesTableColumns = ['select', 'id', 'categoryName', 'image', 'actions'];
+  dataSource: MatTableDataSource<CategoriesEntry> = new MatTableDataSource<CategoriesEntry>();
+  categoriesTableColumns = ['id', 'name']; //['select', 'id', 'categoryName', 'image', 'actions'];
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  ngOnInit(): void {
-    const initialSelection = [];
-    const allowMultiSelect = true;
-    this.selection = new SelectionModel<CategoriesEntry>(allowMultiSelect, initialSelection);
-    this.categoriesList = this.http.get<CategoriesEntry[]>('http://localhost:3000/categories');
+  ngAfterViewInit(): void {
+    // TODO: move the get request earlier
+    this.http.get<CategoriesEntry[]>('http://localhost:3000/categories').subscribe({
+      next: (data: CategoriesEntry[]) => {
+        this.dataSource.data = data;
+        this.dataSource.paginator = this.paginator;
+        const initialSelection = [];
+        const allowMultiSelect = true;
+        this.selection = new SelectionModel<CategoriesEntry>(allowMultiSelect, initialSelection);
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
-    const numRows = this.categoriesList.length;
-    return numSelected == numRows;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle(): void {
     this.isAllSelected() ?
       this.selection.clear() :
-      this.categoriesList.forEach(row => this.selection.select(row));
+      this.dataSource.data.forEach(row => this.selection.select(row));
   }
 
 }
@@ -44,5 +52,11 @@ export class CategoriesListComponent implements OnInit {
 class CategoriesEntry {
   id: number;
   name: string;
-  image: string;
+  descriptionHe: string;
+  descriptionEn: string;
+  displayNameHe: string;
+  displayNameEn: string;
+  imagePath: string;
+  parentCategoryId: number;
+  isVisible: string;
 }

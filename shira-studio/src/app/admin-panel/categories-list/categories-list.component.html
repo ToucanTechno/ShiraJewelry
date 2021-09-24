@@ -1,5 +1,5 @@
 <div id="table-container">
-  <table mat-table [dataSource]="categoriesList">
+  <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
         <mat-checkbox (change)="$event ? masterToggle() : null"
@@ -15,9 +15,12 @@
       </td>
     </ng-container>
     <mat-text-column name="id"></mat-text-column>
-    <mat-text-column name="categoryName"></mat-text-column>
-    <mat-text-column name="image"></mat-text-column>
-    <mat-text-column name="actions">ס</mat-text-column>
+    <mat-text-column name="name"></mat-text-column>
+    <mat-text-column name="imagePath"></mat-text-column>
+    <ng-container matColumndef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef>x</td>
+    </ng-container>
     <tr mat-header-row *matHeaderRowDef="categoriesTableColumns"></tr>
     <tr mat-row *matRowDef="let myRowData; columns: categoriesTableColumns"></tr>
   </table>
