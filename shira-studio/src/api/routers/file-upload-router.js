@@ -6,7 +6,7 @@ let fileUploadRouter = express.Router();
 const SERVER_HOSTNAME = 'http://localhost:4201';
 let multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/product_images')
+    cb(null, 'uploads/product_images/');
   },
   filename: (req, file, cb) => {
     // TODO: Dangerous to take file name from client
@@ -19,6 +19,7 @@ fileUploadRouter.use(multer({storage: multerStorage}).single('productImage'));
 fileUploadRouter.use(cors({ origin: SERVER_HOSTNAME}))
 
 fileUploadRouter.post('/', (req, res) => {
+  // TODO: add uploaded files to DB to track them down
   res.sendStatus(200);
 })
 

@@ -1,7 +1,7 @@
 <mat-card>
   <h1>{{ title }}</h1>
   <!-- TODO: Make sure all fields are properly filled -->
-  <form #categoryForm=ngForm (ngSubmit)="onSubmit(categoryForm)">
+  <form #categoryForm="ngForm" (ngSubmit)="onSubmit(categoryForm)" (keydown.enter)="$event.preventDefault()">
     <div class="form-field">
       <mat-form-field appearance="fill">
         <mat-label>Category Name</mat-label>
@@ -38,7 +38,7 @@
       <mat-form-field>
         <!-- TODO: Change selected if edited -->
         <mat-label>Parent Category</mat-label>
-        <select matNativeControl [(ngModel)]="editedCategoryData.parentCategoryName" name="category" required>
+        <select matNativeControl [(ngModel)]="editedCategoryData.parentCategoryName" name="parent_category" required>
           <option value="">-</option>
           <option  *ngFor="let category of dbCategories$ | async" value="{{ category.name }}">{{ category.displayNameHe }}</option>
         </select>

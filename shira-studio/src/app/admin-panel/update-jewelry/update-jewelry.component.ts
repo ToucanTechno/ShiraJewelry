@@ -56,7 +56,6 @@ export class UpdateJewelryComponent implements OnInit {
   }
 
   onSubmit(productForm: NgForm): void {
-    console.log('Submitting form');
     this.uploadFile().subscribe((filename) => {
       console.log(filename);
       this.addProduct(productForm, filename);

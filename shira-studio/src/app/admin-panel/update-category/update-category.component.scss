@@ -1,5 +1,9 @@
 .foreign-language-field {
   margin-left: 20px;
+  input {
+    direction: rtl;
+    text-align: right;
+  }
 }
 
 #browse-button {

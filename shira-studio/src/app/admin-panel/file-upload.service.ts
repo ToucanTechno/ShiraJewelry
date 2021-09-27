@@ -15,12 +15,13 @@ export class FileUploadService {
     const filename = fileCrc + '.' + format;
     const endpoint = environment.API_SERVER_URL + '/upload';
     const formData: FormData = new FormData();
+    // Treat file as a blob here
     formData.append('productImage', file, filename);
     // TODO: base64 encode
-    formData.append('lastModified', file.lastModified.toString());
+    // formData.append('lastModified', file.lastModified.toString());
     // TODO: base64 encode
-    formData.append('size', file.size.toString());
-    formData.append('format', format);
+    // formData.append('size', file.size.toString());
+    // formData.append('format', format);
     return this.http.post(endpoint, formData, { responseType: 'text' })
       .pipe(map(() => filename))
       .pipe(catchError((e) => of(this.handleError(e))));

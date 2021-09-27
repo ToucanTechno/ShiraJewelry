@@ -5,7 +5,7 @@ const cors = require("cors");
 let categoriesRouter = express.Router();
 const SERVER_HOSTNAME = 'http://localhost:4201';
 
-// TODO: Remove in Categoryion
+// TODO: Remove in Production
 categoriesRouter.use(cors({ origin: SERVER_HOSTNAME }));
 
 categoriesRouter.use(express.json());
@@ -28,7 +28,7 @@ categoriesRouter.get('/', (req, res) => {
 });
 
 categoriesRouter.post('/', (req, res) => {
-  req.body.price = parseInt(req.body.price);
+  prepareCategoryRequest(req)
   const category = new categoriesModel.Category(
     req.locals.dbSession,
     undefined,
@@ -43,7 +43,9 @@ categoriesRouter.post('/', (req, res) => {
     categoriesModel.addCategory(req.locals.dbSession, category)
       .then((lastInsertedID) => {
         res.json({insertedID: lastInsertedID});
-      });
+      }).catch((err) => {
+        res.status(400).send('Failed adding category');
+    });
   });
 });
 
@@ -58,7 +60,7 @@ categoriesRouter.post('/:id([0-9]+)', (req, res, next) => {
 });
 
 categoriesRouter.put('/:id([0-9]+)', (req, res) => {
-  req.body.price = parseInt(req.body.price);
+  prepareCategoryRequest(req);
   const category = new categoriesModel.Category(
     req.locals.dbSession,
     undefined,
@@ -68,13 +70,14 @@ categoriesRouter.put('/:id([0-9]+)', (req, res) => {
     req.body.display_name_he,
     req.body.display_name_en,
     req.body.image_path,
-    req.body.price);
+    req.body.parent_category_name);
   category.parentCategoryPromise.then(() => {
     categoriesModel.updateCategoryByID(req.locals.dbSession, parseInt(req.params.id), category)
       .then((affectedItemsCount) => {
-        console.log(category);
         res.json({ affectedItemsCount: affectedItemsCount });
-      })
+      }).catch((err) => {
+        res.status(400).send('Failed updating category');
+    })
   });
 });
 
@@ -84,5 +87,14 @@ categoriesRouter.delete('/:id([0-9]+)', (req, res) => {
       res.json({ affectedItemsCount: affectedItemsCount });
     })
 });
+
+function prepareCategoryRequest(req) {
+  if (req.body.description_he === undefined) {
+    req.body.description_he = '';
+  }
+  if (req.body.description_en === undefined) {
+    req.body.description_en = '';
+  }
+}
 
 module.exports = categoriesRouter;

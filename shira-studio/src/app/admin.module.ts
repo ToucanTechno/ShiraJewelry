@@ -23,6 +23,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {HttpClientModule} from '@angular/common/http';
 import {CategoriesListComponent} from './admin-panel/categories-list/categories-list.component';
 import {MatTabsModule} from '@angular/material/tabs';
+import { AlertComponent } from './admin-panel/alert/alert.component';
+import {MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -31,28 +33,32 @@ import {MatTabsModule} from '@angular/material/tabs';
     UpdateJewelryComponent,
     UpdateCategoryComponent,
     JewelryListComponent,
-    CategoriesListComponent
+    CategoriesListComponent,
+    AlertComponent
   ],
     imports: [
-        BrowserModule,
-        RouterModule,
-        AdminRoutingModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        MatToolbarModule,
-        MatMenuModule,
-        MatIconModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatCheckboxModule,
-        HttpClientModule,
-        MatTabsModule
+      BrowserModule,
+      RouterModule,
+      AdminRoutingModule,
+      BrowserAnimationsModule,
+      FormsModule,
+      MatToolbarModule,
+      MatMenuModule,
+      MatIconModule,
+      MatCardModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatButtonModule,
+      MatTableModule,
+      MatPaginatorModule,
+      MatCheckboxModule,
+      HttpClientModule,
+      MatTabsModule,
+      MatDialogModule
     ],
-  providers: [],
+  providers: [
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
+  ],
   bootstrap: [AdminPanelComponent]
 })
 export class AdminModule { }

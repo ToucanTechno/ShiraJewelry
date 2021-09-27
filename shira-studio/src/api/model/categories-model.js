@@ -25,9 +25,10 @@ class Category {
 
 function getAllCategories(dbSession, count = 10, offset = 0) {
   const table = dbSession.getTable('categories');
-  return table.select().limit(count, offset).execute()
+  // TODO: add limit: return table.select().limit(count, offset).execute()
+  return table.select().execute()
     .then((res) => {
-      entries = res.fetchAll();
+      let entries = res.fetchAll();
       return entries.map((data) => {
         return {
           id: data[0],
@@ -71,12 +72,16 @@ function getCategory(dbSession, categoryId) {
 }
 
 function getCategoryByName(dbSession, categoryName) {
+  if (categoryName === undefined) {
+    return new Promise((resolve, reject) => resolve(undefined));
+  }
   const table = dbSession.getTable('categories');
   return table.select().where('name = :name').bind('name', categoryName).execute()
     .then((res) => {
-      result = res.fetchOne();
+      let result = res.fetchOne();
       return result;
     })
+    .catch((error) => console.error(error));
 }
 
 function addCategory(dbSession, category) {
@@ -98,7 +103,11 @@ function addCategory(dbSession, category) {
         throw "No items were added"
       }
       return res.getAutoIncrementValue();
-    }).catch((err) => {console.log("Error: ", err)})  // TODO: Improve catch mechanism
+    }).catch((err) => {
+      console.error("Failed adding Category:", category);
+      console.error("Error: ", err)
+      throw "Failed adding category";
+    });
 }
 
 function updateCategoryByID(dbSession, categoryId, newCategory) {
@@ -116,10 +125,12 @@ function updateCategoryByID(dbSession, categoryId, newCategory) {
     .bind('id', categoryId)
     .execute()
     .then((res) => {
-      console.log(res.getAffectedItemsCount());
       return res.getAffectedItemsCount()
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      throw "Failed updating category";
+    });
 }
 
 function deleteCategoryByID(dbSession, categoryId) {

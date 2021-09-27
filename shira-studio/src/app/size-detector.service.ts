@@ -30,7 +30,6 @@ export class SizeDetectorService implements OnDestroy {
 
   private wrapOnResizeHandler(handler: (sizeBreakpoint: WindowSizeBreakpoint) => void): (e: Event) => void {
     return (e: Event) => {
-      console.log(e);
       // @ts-ignore
       handler(this.getSizeBreakpoint(e.target.innerWidth));
     };

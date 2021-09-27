@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { FileUploadService } from '../file-upload.service';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import crc32 from 'crc/crc32';
 import {Observable, of} from 'rxjs';
 import {NgForm} from '@angular/forms';
@@ -8,6 +8,8 @@ import {environment} from '../../../environments/environment';
 import {catchError} from 'rxjs/operators';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CategoryEntry} from '../../models/category';
+import {MatDialog} from '@angular/material/dialog';
+import {AlertComponent} from '../alert/alert.component';
 
 @Component({
   selector: 'app-update-category',
@@ -27,7 +29,8 @@ export class UpdateCategoryComponent implements OnInit {
   constructor(private fileUploadService: FileUploadService,
               private http: HttpClient,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              public dialog: MatDialog) {
     this.routeType = this.route.snapshot.data.type;
     switch (this.routeType) {
       case 'add':
@@ -45,7 +48,6 @@ export class UpdateCategoryComponent implements OnInit {
       const categoryId = this.route.snapshot.params.category;
       this.http.get<CategoryEntry>(environment.API_SERVER_URL + '/categories/' + categoryId).subscribe({
         next: (data) => {
-          console.log(data);
           this.editedCategoryData = data;
         },
         error: (error) => console.error(error)
@@ -89,12 +91,10 @@ export class UpdateCategoryComponent implements OnInit {
   }
 
   onSubmit(categoryForm: NgForm): void {
-    console.log('Submitting form');
     // TODO: different behavior for edit and add
     switch (this.routeType) {
       case 'add':
         this.uploadFile().subscribe((filename) => {
-          console.log(filename);
           this.addCategory(categoryForm, filename);
         });
         break;
@@ -112,7 +112,6 @@ export class UpdateCategoryComponent implements OnInit {
   }
 
   addCategory(categoryForm: NgForm, imagePath: string): void {
-    console.log(categoryForm);
     this.http.post(environment.API_SERVER_URL + '/categories',
       {
         name: categoryForm.form.value.category_name,
@@ -120,19 +119,25 @@ export class UpdateCategoryComponent implements OnInit {
         description_en: categoryForm.form.value.description,
         display_name_he: categoryForm.form.value.category_name_he,
         display_name_en: categoryForm.form.value.category_name,
-        parent_category_name: categoryForm.form.value.category,
+        parent_category_name: categoryForm.form.value.parent_category,
         image_path: imagePath,
       }, { responseType: 'json' })
-      .pipe(catchError((e) => of(console.log(e))))
-      .subscribe((res: CategoryFormResponse) => {
+      .pipe(catchError((e) => of(e)))
+      .subscribe(async (res: CategoryAddFormResponse | HttpErrorResponse) => {
+        if (res instanceof HttpErrorResponse) {
+          this.dialog.open(AlertComponent, {data: {message: `Request to server failed: ${res.status}`}})
+          return;
+        }
         console.log(res.insertedID);
-        // TODO: Redirect somewhere better
-        return this.router.navigate(['/admin']);
+        const message = `Added ${categoryForm.form.value.category_name} successfully. Inserted ID is: ${res.insertedID}`;
+        const dialogRef = this.dialog.open(AlertComponent, {data: {message}});
+        await dialogRef.afterClosed().subscribe((e) => {
+          this.router.navigate(['/admin']);
+        });
       });
   }
 
   editCategory(categoryForm: NgForm, imagePath?: string): void {
-    console.log(categoryForm);
     this.http.put(environment.API_SERVER_URL + '/categories/' + this.route.snapshot.params.category,
       {
         name: categoryForm.form.value.category_name,
@@ -140,13 +145,21 @@ export class UpdateCategoryComponent implements OnInit {
         description_en: categoryForm.form.value.description,
         display_name_he: categoryForm.form.value.category_name_he,
         display_name_en: categoryForm.form.value.category_name,
-        parent_category_name: categoryForm.form.value.category, // TODO: make sure empty category stays empty
+        parent_category_name: categoryForm.form.value.parent_category, // TODO: make sure empty category stays empty
         image_path: (imagePath) ? imagePath : this.editedCategoryData.imagePath,
       }, { responseType: 'json' })
-      .pipe(catchError((e) => of(console.log(e))))
-      .subscribe((res: CategoryFormResponse) => {
+      .pipe(catchError((e) => of(e)))
+      .subscribe(async (res: CategoryEditFormResponse | HttpErrorResponse) => {
         console.log(res);
-        // TODO: alert success
+        if (res instanceof HttpErrorResponse) {
+          this.dialog.open(AlertComponent, {data: {message: `Request to server failed: ${res.status}`}})
+          return;
+        }
+        const message = (res.affectedItemsCount === 0) ? 'Category didn\'t change' : 'Category changed successfully';
+        const dialogRef = this.dialog.open(AlertComponent, {data: {message}});
+        await dialogRef.afterClosed().subscribe((e) => {
+          this.router.navigate(['/admin', 'edit-categories']);
+        });
       });
   }
 
@@ -163,6 +176,10 @@ export class UpdateCategoryComponent implements OnInit {
   }
 }
 
-interface CategoryFormResponse {
+interface CategoryAddFormResponse {
   insertedID: number;
+}
+
+interface CategoryEditFormResponse {
+  affectedItemsCount: number;
 }
