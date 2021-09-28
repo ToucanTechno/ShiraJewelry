@@ -31,6 +31,8 @@ function getProduct(dbSession, productId) {
 
 function addProduct(dbSession, product) {
   let table = dbSession.getTable('products');
+  // TODO: Insert parent categories one by one to product_categories
+  // TODO: add stock to table
   return table.insert(
     'name', 'description_he', 'description_en', 'display_name_he', 'display_name_en', 'image_path', 'price')
     .values(

@@ -25,11 +25,10 @@
     </div>
     <div class="form-field">
       <mat-form-field>
-        <mat-label>Category</mat-label>
-        <select matNativeControl ngModel name="category" required>
-          <option value="brooches">Brooches</option>
-          <option value="paintings">Paintings</option>
-        </select>
+        <mat-label>Categories</mat-label>
+        <mat-select multiple matNativeControl ngModel name="parent_categories" required>
+          <mat-option  *ngFor="let category of dbCategories$ | async" value="{{ category.name }}">{{ category.displayNameHe }}</mat-option>
+        </mat-select>
       </mat-form-field>
     </div>
     <div class="form-field">

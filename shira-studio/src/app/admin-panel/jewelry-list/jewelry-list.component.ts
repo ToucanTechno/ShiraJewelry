@@ -1,47 +1,52 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {SelectionModel} from '@angular/cdk/collections';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatTableDataSource} from '@angular/material/table';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../../environments/environment';
+import { ProductEntry } from '../../models/product';
 
 @Component({
   selector: 'app-jewelry-list',
   templateUrl: './jewelry-list.component.html',
   styleUrls: ['./jewelry-list.component.scss']
 })
-export class JewelryListComponent implements OnInit {
+export class JewelryListComponent implements AfterViewInit {
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  selection: SelectionModel<ProductEntry>;
+  dataSource: MatTableDataSource<ProductEntry> = new MatTableDataSource<ProductEntry>();
+  productsTableColumns = ['select', 'id', 'displayNameEn', 'displayNameHe', 'imagePath', 'price', 'stock', 'actions'];
 
-  selection: SelectionModel<JewelryEntry>;
-  jewelryList = [
-    {id: 1, name: 'hello', price: 123, image: 'b'},
-    {id: 2, name: 'what', price: 9191919, image: 'a'}
-  ];
-  jewelryTableColumns = ['select', 'id', 'name', 'price', 'image'];
+  constructor(private http: HttpClient) {}
 
-  constructor() {
-    const initialSelection = [];
-    const allowMultiSelect = true;
-    this.selection = new SelectionModel<JewelryEntry>(allowMultiSelect, initialSelection);
-  }
-
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
+    // TODO: move the get request earlier
+    this.http.get<ProductEntry[]>(environment.API_SERVER_URL + '/products').subscribe({
+      next: (data: ProductEntry[]) => {
+        console.log(data);
+        this.dataSource.data = data;
+        this.dataSource.paginator = this.paginator;
+        const initialSelection = [];
+        const allowMultiSelect = true;
+        this.selection = new SelectionModel<ProductEntry>(allowMultiSelect, initialSelection);
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
-    const numRows = this.jewelryList.length;
-    return numSelected == numRows;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle(): void {
     this.isAllSelected() ?
       this.selection.clear() :
-      this.jewelryList.forEach(row => this.selection.select(row));
+      this.dataSource.data.forEach(row => this.selection.select(row));
   }
-}
-
-class JewelryEntry {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
 }

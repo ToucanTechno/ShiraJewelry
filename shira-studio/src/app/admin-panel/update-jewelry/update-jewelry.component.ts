@@ -6,6 +6,7 @@ import {NgForm} from '@angular/forms';
 import {HttpClient} from '@angular/common/http';
 import {catchError} from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import {CategoryEntry} from '../../models/category';
 
 // TODO: Put somewhere better, maybe in development environment
 
@@ -18,10 +19,12 @@ export class UpdateJewelryComponent implements OnInit {
   uploadedFile: File = null;
   uploadedFileCrc: string = null;
   uploadedFileURL: string = null;
+  dbCategories$: Observable<CategoryEntry[]>;
 
   constructor(private fileUploadService: FileUploadService, private http: HttpClient) { }
 
   ngOnInit(): void {
+    this.dbCategories$ = this.http.get<CategoryEntry[]>(environment.API_SERVER_URL + '/categories');
   }
 
   handleFileInput(files: FileList): void {

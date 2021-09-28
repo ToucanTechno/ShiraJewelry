@@ -25,6 +25,7 @@ import {CategoriesListComponent} from './admin-panel/categories-list/categories-
 import {MatTabsModule} from '@angular/material/tabs';
 import { AlertComponent } from './admin-panel/alert/alert.component';
 import {MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule} from '@angular/material/dialog';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -37,24 +38,25 @@ import {MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule} from '@angular/material/dia
     AlertComponent
   ],
     imports: [
-      BrowserModule,
-      RouterModule,
-      AdminRoutingModule,
-      BrowserAnimationsModule,
-      FormsModule,
-      MatToolbarModule,
-      MatMenuModule,
-      MatIconModule,
-      MatCardModule,
-      MatFormFieldModule,
-      MatInputModule,
-      MatButtonModule,
-      MatTableModule,
-      MatPaginatorModule,
-      MatCheckboxModule,
-      HttpClientModule,
-      MatTabsModule,
-      MatDialogModule
+        BrowserModule,
+        RouterModule,
+        AdminRoutingModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        MatToolbarModule,
+        MatMenuModule,
+        MatIconModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatCheckboxModule,
+        HttpClientModule,
+        MatTabsModule,
+        MatDialogModule,
+        MatSelectModule
     ],
   providers: [
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}

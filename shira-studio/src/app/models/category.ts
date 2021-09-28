@@ -1,11 +1,11 @@
-import {Product} from './product';
+import {ProductEntry} from './product';
 
 interface Category {
   name: string;
   description: string;
   subcategories: Category[];
-  products: Product[];
-  ourPicks: Product[];
+  products: ProductEntry[];
+  ourPicks: ProductEntry[];
 }
 
 class CategoryEntry {
