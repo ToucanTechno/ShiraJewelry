@@ -33,12 +33,12 @@ function getAllCategories(dbSession, count = 10, offset = 0) {
         return {
           id: data[0],
           name: data[1],
-          descriptionHe: data[2],
-          descriptionEn: data[3],
-          displayNameHe: data[4],
-          displayNameEn: data[5],
+          descriptionHE: data[2],
+          descriptionEN: data[3],
+          displayNameHE: data[4],
+          displayNameEN: data[5],
           imagePath: data[6],
-          parentCategoryId: data[7],
+          parentCategoryID: data[7],
           isVisible: data[8]
         };
       })
@@ -58,12 +58,12 @@ function getCategory(dbSession, categoryId) {
           return {
             id: entry[0],
             name: entry[1],
-            descriptionHe: entry[2],
-            descriptionEn: entry[3],
-            displayNameHe: entry[4],
-            displayNameEn: entry[5],
+            descriptionHE: entry[2],
+            descriptionEN: entry[3],
+            displayNameHE: entry[4],
+            displayNameEN: entry[5],
             imagePath: entry[6],
-            parentCategoryId: entry[7],
+            parentCategoryID: entry[7],
             isVisible: entry[8],
             parentCategoryName: (parentEntry) ? parentEntry[0] : '-'
           };

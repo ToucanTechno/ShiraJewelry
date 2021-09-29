@@ -11,12 +11,12 @@ const routes: Routes = [
   {
     path: 'admin',
     children: [
-      { path: 'edit-item/:id', component: UpdateJewelryComponent, data: { type: 'edit' } },
-      { path: 'add-item', component: UpdateJewelryComponent, data: { type: 'add' } },
+      { path: 'edit-product/:id', component: UpdateJewelryComponent, data: { type: 'edit' } },
+      { path: 'add-product', component: UpdateJewelryComponent, data: { type: 'add' } },
       { path: 'edit-category/:category', component: UpdateCategoryComponent, data: { type: 'edit' } },
       { path: 'add-category', component: UpdateCategoryComponent, data: { type: 'add' } },
       { path: 'edit-categories', component: CategoriesListComponent },
-      { path: 'edit-items', component: JewelryListComponent },
+      { path: 'edit-products', component: JewelryListComponent },
       { path: '', component: DashboardComponent }
     ]
   }

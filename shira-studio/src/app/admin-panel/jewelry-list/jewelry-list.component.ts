@@ -23,7 +23,6 @@ export class JewelryListComponent implements AfterViewInit {
     // TODO: move the get request earlier
     this.http.get<ProductEntry[]>(environment.API_SERVER_URL + '/products').subscribe({
       next: (data: ProductEntry[]) => {
-        console.log(data);
         this.dataSource.data = data;
         this.dataSource.paginator = this.paginator;
         const initialSelection = [];

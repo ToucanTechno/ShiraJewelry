@@ -11,12 +11,12 @@ interface Category {
 class CategoryEntry {
   id: number;
   name: string;
-  descriptionHe: string;
-  descriptionEn: string;
-  displayNameHe: string;
-  displayNameEn: string;
+  descriptionHE: string;
+  descriptionEN: string;
+  displayNameHE: string;
+  displayNameEN: string;
   imagePath: string;
-  parentCategoryId: number;
+  parentCategoryID: number;
   isVisible: string;
   parentCategoryName: string;
 

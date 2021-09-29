@@ -17,7 +17,21 @@ function getAllProducts(dbSession, count = 10, offset = 0) {
   const table = dbSession.getTable('products');
   return table.select().limit(count, offset).execute()
     .then((res) => {
-      return res.fetchAll();
+      let entries = res.fetchAll();
+      return entries.map((data) => {
+        return {
+          id: data[0],
+          name: data[1],
+          descriptionHE: data[2],
+          descriptionEN: data[3],
+          displayNameHE: data[4],
+          displayNameEN: data[5],
+          imagePath: data[6],
+          price: data[7],
+          stock: data[8],
+          isVisible: data[9]
+        };
+      });
     });
 }
 
@@ -34,7 +48,7 @@ function addProduct(dbSession, product) {
   // TODO: Insert parent categories one by one to product_categories
   // TODO: add stock to table
   return table.insert(
-    'name', 'description_he', 'description_en', 'display_name_he', 'display_name_en', 'image_path', 'price')
+    'name', 'description_he', 'description_en', 'display_name_he', 'display_name_en', 'image_path', 'price', 'stock')
     .values(
       product.productName,
       product.descriptionHE,
@@ -42,7 +56,8 @@ function addProduct(dbSession, product) {
       product.displayNameHE,
       product.displayNameEN,
       product.imagePath,
-      product.price)
+      product.price,
+      product.stock)
     .execute()
     .then((res) => {
       if (res.getAffectedItemsCount() == 0) {
@@ -62,6 +77,7 @@ function updateProductByID(dbSession, productId, newProduct) {
     .set('display_name_en', newProduct.displayNameEN)
     .set('image_path', newProduct.imagePath)
     .set('price', newProduct.price)
+    .set('stock', newProduct.stock)
     .where('id = :id')
     .bind('id', productId)
     .execute()

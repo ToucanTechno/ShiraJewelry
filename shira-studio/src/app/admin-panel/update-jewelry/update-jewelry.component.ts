@@ -7,6 +7,8 @@ import {HttpClient} from '@angular/common/http';
 import {catchError} from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {CategoryEntry} from '../../models/category';
+import {ActivatedRoute} from '@angular/router';
+import {ProductEntry} from '../../models/product';
 
 // TODO: Put somewhere better, maybe in development environment
 
@@ -16,15 +18,32 @@ import {CategoryEntry} from '../../models/category';
   styleUrls: ['./update-jewelry.component.scss']
 })
 export class UpdateJewelryComponent implements OnInit {
+  title = '';
+  routeType = '';
+  editedProductData: ProductEntry = new ProductEntry();
   uploadedFile: File = null;
   uploadedFileCrc: string = null;
   uploadedFileURL: string = null;
-  dbCategories$: Observable<CategoryEntry[]>;
+  dbProducts$: Observable<ProductEntry[]>;
 
-  constructor(private fileUploadService: FileUploadService, private http: HttpClient) { }
+  constructor(private fileUploadService: FileUploadService,
+              private http: HttpClient,
+              private route: ActivatedRoute,) {
+    this.routeType = this.route.snapshot.data.type;
+    switch (this.routeType) {
+      case 'add':
+        this.title = 'Add a Category';
+        break;
+      case 'edit':
+        this.title = 'Edit a Category';
+        break;
+      default:
+        console.log('Invalid route data type: ', this.routeType);
+    }
+  }
 
   ngOnInit(): void {
-    this.dbCategories$ = this.http.get<CategoryEntry[]>(environment.API_SERVER_URL + '/categories');
+    this.dbProducts$ = this.http.get<ProductEntry[]>(environment.API_SERVER_URL + '/products');
   }
 
   handleFileInput(files: FileList): void {

@@ -20,11 +20,11 @@ export class AdminPanelComponent implements OnInit, AfterViewInit {
       ]},
     { name: 'הוסף', menuName: 'menu2', url: undefined, childLinks: [
         { name: 'הוסף קטגוריה', url: 'add-category' },
-        { name: 'הוסף מוצר', url: 'add-item' }
+        { name: 'הוסף מוצר', url: 'add-product' }
       ]},
     { name: 'ערוך', menuName: 'menu3', url: undefined, childLinks: [
         { name: 'ערוך קטגוריות', url: 'edit-categories' },
-        { name : 'ערוך מוצרים', url: 'edit-items' } // TODO: edit category
+        { name : 'ערוך מוצרים', url: 'edit-products' } // TODO: edit category
       ]}
   ];
 
