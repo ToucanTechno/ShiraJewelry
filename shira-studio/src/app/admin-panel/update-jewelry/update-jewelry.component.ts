@@ -32,13 +32,24 @@ export class UpdateJewelryComponent implements OnInit {
     this.routeType = this.route.snapshot.data.type;
     switch (this.routeType) {
       case 'add':
-        this.title = 'Add a Category';
+        this.title = 'Add a Product';
         break;
       case 'edit':
-        this.title = 'Edit a Category';
+        this.title = 'Edit a Product';
         break;
       default:
         console.log('Invalid route data type: ', this.routeType);
+    }
+
+    if (this.routeType === 'edit') {
+      // Get entry from DB
+      const productID = parseInt(this.route.snapshot.params.product, 10);
+      this.http.get<ProductEntry>(environment.API_SERVER_URL + '/products/' + productID).subscribe({
+        next: (data) => {
+          this.editedProductData = data;
+        },
+        error: (error) => console.error(error)
+      });
     }
   }
 
@@ -79,13 +90,11 @@ export class UpdateJewelryComponent implements OnInit {
 
   onSubmit(productForm: NgForm): void {
     this.uploadFile().subscribe((filename) => {
-      console.log(filename);
       this.addProduct(productForm, filename);
     });
   }
 
   addProduct(productForm: NgForm, imagePath: string): void {
-    console.log(productForm);
     this.http.post(environment.API_SERVER_URL + '/products',
       {
         name: productForm.form.value.product_name,
@@ -101,6 +110,18 @@ export class UpdateJewelryComponent implements OnInit {
         console.log(res.insertedID);
         // TODO: Redirect somewhere better
       });
+  }
+
+  getEditedImagePath(): string {
+    if (this.uploadedFileURL !== null) {
+      return this.uploadedFileURL;
+    }
+    if (this.routeType !== 'edit') {
+      return '';
+    }
+    let imagePath = this.editedProductData.imagePath;
+    imagePath = (imagePath === undefined) ? '' : '/product_images/' + imagePath;
+    return imagePath;
   }
 }
 

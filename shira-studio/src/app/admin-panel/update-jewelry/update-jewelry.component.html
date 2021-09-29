@@ -1,14 +1,14 @@
 <mat-card>
-  <h1>Add a Jewelry Item</h1>
+  <h1>{{ title }}</h1>
   <form #productForm="ngForm" (ngSubmit)="onSubmit(productForm)">
     <div class="form-field">
       <mat-form-field appearance="fill">
         <mat-label>Product Name</mat-label>
-        <input matInput ngModel name="product_name" placeholder="Jewelry Item Name">
+        <input matInput [(ngModel)]="editedProductData.displayNameEN" name="product_name" placeholder="Jewelry Item Name">
       </mat-form-field>
       <mat-form-field appearance="fill" class="foreign-language-field">
         <mat-label>שם המוצר בעברית</mat-label>
-        <input matInput ngModel name="product_name_he" placeholder="שם המוצר בעברית">
+        <input matInput [(ngModel)]="editedProductData.displayNameHE" name="product_name_he" placeholder="שם המוצר בעברית">
       </mat-form-field>
     </div>
     <div class="form-field">
@@ -18,8 +18,8 @@
              id="browse-button"
              name="image_preview"
              (change)="handleFileInput($event.target.files)">
-      <img *ngIf="uploadedFileURL !== null"
-           [src]="(this.uploadedFileURL !== null) ? this.uploadedFileURL : ''"
+      <img *ngIf="routeType == 'edit' || uploadedFileURL !== null"
+           [src]="getEditedImagePath()"
            alt="Image Preview"
            class="image-preview">
     </div>
@@ -27,30 +27,30 @@
       <mat-form-field>
         <mat-label>Categories</mat-label>
         <mat-select multiple matNativeControl ngModel name="parent_categories" required>
-          <mat-option  *ngFor="let category of dbCategories$ | async" value="{{ category.name }}">{{ category.displayNameHe }}</mat-option>
+          <mat-option  *ngFor="let product of dbProducts$ | async" value="{{ product.name }}">{{ product.displayNameHE }}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
     <div class="form-field">
       <mat-form-field>
         <mat-label>Description</mat-label>
-        <textarea matInput ngModel name="description" placeholder="Item description..."></textarea>
+        <textarea matInput [(ngModel)]="editedProductData.descriptionEN" name="description" placeholder="Item description..."></textarea>
       </mat-form-field>
       <mat-form-field class="foreign-language-field">
         <mat-label>תיאור בעברית</mat-label>
-        <input matInput ngModel name="description_he" placeholder="תיאור בעברית">
+        <input matInput [(ngModel)]="editedProductData.descriptionHE" name="description_he" placeholder="תיאור בעברית">
       </mat-form-field>
     </div>
     <div class="form-field">
       <mat-form-field>
         <mat-label>Stock</mat-label>
-        <input matInput ngModel name="stock" type="number">
+        <input matInput [(ngModel)]="editedProductData.stock" name="stock" type="number">
       </mat-form-field>
     </div>
     <div class="number-field form-field">
       <mat-form-field appearance="fill">
         <mat-label>Price</mat-label>
-        <input matInput ngModel name="price" type="number" placeholder="400">
+        <input matInput [(ngModel)]="editedProductData.price" name="price" type="number" placeholder="400">
         <span matPrefix>$&nbsp;</span>
         <span matSuffix>.00</span>
       </mat-form-field>

@@ -1,15 +1,15 @@
 <mat-card>
   <h1>{{ title }}</h1>
   <!-- TODO: Make sure all fields are properly filled -->
-  <form #categoryForm="ngForm" (ngSubmit)="onSubmit(categoryForm)" (keydown.enter)="$event.preventDefault()">
+  <form #categoryForm="ngForm" (ngSubmit)="onSubmit(categoryForm)">
     <div class="form-field">
       <mat-form-field appearance="fill">
         <mat-label>Category Name</mat-label>
-        <input matInput [(ngModel)]="editedCategoryData.displayNameEn" name="category_name" placeholder="Category Name">
+        <input matInput [(ngModel)]="editedCategoryData.displayNameEN" name="category_name" placeholder="Category Name">
       </mat-form-field>
       <mat-form-field appearance="fill" class="foreign-language-field">
         <mat-label>שם קטגוריה בעברית</mat-label>
-        <input matInput [(ngModel)]="editedCategoryData.displayNameHe" name="category_name_he" placeholder="שם קטגוריה בעברית">
+        <input matInput [(ngModel)]="editedCategoryData.displayNameHE" name="category_name_he" placeholder="שם קטגוריה בעברית">
       </mat-form-field>
     </div>
     <div class="form-field">
@@ -27,11 +27,11 @@
     <div class="form-field">
       <mat-form-field>
         <mat-label>Description</mat-label>
-        <textarea matInput [(ngModel)]="editedCategoryData.descriptionEn" name="description" placeholder="Category description..."></textarea>
+        <textarea matInput [(ngModel)]="editedCategoryData.descriptionEN" name="description" placeholder="Category description..."></textarea>
       </mat-form-field>
       <mat-form-field class="foreign-language-field">
         <mat-label>תיאור בעברית</mat-label>
-        <textarea matInput [(ngModel)]="editedCategoryData.descriptionHe" name="description_he" placeholder="תיאור הקטגוריה..."></textarea>
+        <textarea matInput [(ngModel)]="editedCategoryData.descriptionHE" name="description_he" placeholder="תיאור הקטגוריה..."></textarea>
       </mat-form-field>
     </div>
     <div class="form-field">
@@ -40,7 +40,7 @@
         <mat-label>Parent Category</mat-label>
         <mat-select matNativeControl [(ngModel)]="editedCategoryData.parentCategoryName" name="parent_category" required>
           <mat-option value="">-</mat-option>
-          <mat-option  *ngFor="let category of dbCategories$ | async" value="{{ category.name }}">{{ category.displayNameHe }}</mat-option>
+          <mat-option  *ngFor="let category of dbCategories$ | async" value="{{ category.name }}">{{ category.displayNameHE }}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>

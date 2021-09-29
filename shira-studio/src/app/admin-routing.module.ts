@@ -11,7 +11,7 @@ const routes: Routes = [
   {
     path: 'admin',
     children: [
-      { path: 'edit-product/:id', component: UpdateJewelryComponent, data: { type: 'edit' } },
+      { path: 'edit-product/:product', component: UpdateJewelryComponent, data: { type: 'edit' } },
       { path: 'add-product', component: UpdateJewelryComponent, data: { type: 'add' } },
       { path: 'edit-category/:category', component: UpdateCategoryComponent, data: { type: 'edit' } },
       { path: 'add-category', component: UpdateCategoryComponent, data: { type: 'add' } },

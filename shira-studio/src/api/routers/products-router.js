@@ -38,7 +38,6 @@ productsRouter.post('/', (req, res) => {
     req.body.display_name_en,
     req.body.image_path,
     req.body.price);
-  console.log(product);
   productsModel.addProduct(req.locals.dbSession, product)
     .then((lastInsertedID) => {
       res.json({insertedID: lastInsertedID});

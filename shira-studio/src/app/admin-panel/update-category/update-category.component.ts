@@ -45,7 +45,7 @@ export class UpdateCategoryComponent implements OnInit {
 
     if (this.routeType === 'edit') {
       // Get entry from DB
-      const categoryId = this.route.snapshot.params.category;
+      const categoryId = parseInt(this.route.snapshot.params.category, 10);
       this.http.get<CategoryEntry>(environment.API_SERVER_URL + '/categories/' + categoryId).subscribe({
         next: (data) => {
           this.editedCategoryData = data;
@@ -138,7 +138,7 @@ export class UpdateCategoryComponent implements OnInit {
   }
 
   editCategory(categoryForm: NgForm, imagePath?: string): void {
-    this.http.put(environment.API_SERVER_URL + '/categories/' + this.route.snapshot.params.category,
+    this.http.put(environment.API_SERVER_URL + '/categories/' + parseInt(this.route.snapshot.params.category, 10),
       {
         name: categoryForm.form.value.category_name,
         description_he: categoryForm.form.value.description_he,
@@ -150,7 +150,6 @@ export class UpdateCategoryComponent implements OnInit {
       }, { responseType: 'json' })
       .pipe(catchError((e) => of(e)))
       .subscribe(async (res: CategoryEditFormResponse | HttpErrorResponse) => {
-        console.log(res);
         if (res instanceof HttpErrorResponse) {
           this.dialog.open(AlertComponent, {data: {message: `Request to server failed: ${res.status}`}})
           return;

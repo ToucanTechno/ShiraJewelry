@@ -15,7 +15,7 @@ export class CategoriesListComponent implements AfterViewInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   selection: SelectionModel<CategoryEntry>;
   dataSource: MatTableDataSource<CategoryEntry> = new MatTableDataSource<CategoryEntry>();
-  categoriesTableColumns = ['select', 'id', 'displayNameEn', 'displayNameHe', 'imagePath', 'actions'];
+  categoriesTableColumns = ['select', 'id', 'displayNameEN', 'displayNameHE', 'imagePath', 'actions'];
 
   constructor(private http: HttpClient) {}
 

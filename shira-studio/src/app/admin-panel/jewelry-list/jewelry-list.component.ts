@@ -15,7 +15,7 @@ export class JewelryListComponent implements AfterViewInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   selection: SelectionModel<ProductEntry>;
   dataSource: MatTableDataSource<ProductEntry> = new MatTableDataSource<ProductEntry>();
-  productsTableColumns = ['select', 'id', 'displayNameEn', 'displayNameHe', 'imagePath', 'price', 'stock', 'actions'];
+  productsTableColumns = ['select', 'id', 'displayNameEN', 'displayNameHE', 'imagePath', 'price', 'stock', 'actions'];
 
   constructor(private http: HttpClient) {}
 

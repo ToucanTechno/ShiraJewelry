@@ -39,7 +39,20 @@ function getProduct(dbSession, productId) {
   const table = dbSession.getTable('products');
   return table.select().where('id = :id').bind('id', productId).execute()
     .then((res) => {
-      return res.fetchOne();
+      const data = res.fetchOne();
+      // TODO: add categories
+      return {
+        id: data[0],
+        name: data[1],
+        descriptionHE: data[2],
+        descriptionEN: data[3],
+        displayNameHE: data[4],
+        displayNameEN: data[5],
+        imagePath: data[6],
+        price: data[7],
+        stock: data[8],
+        isVisible: data[9]
+      };
     });
 }
 
