@@ -37,22 +37,49 @@ function getAllProducts(dbSession, count = 10, offset = 0) {
 
 function getProduct(dbSession, productId) {
   const table = dbSession.getTable('products');
+  const parentsTable = dbSession.getTable('product_categories');
+  const categoriesTable = dbSession.getTable('categories');
   return table.select().where('id = :id').bind('id', productId).execute()
     .then((res) => {
       const data = res.fetchOne();
+      return parentsTable.select('parent_category_id').where('product_id = :id').bind('id', productId).execute()
+        .then((res) => {
+          const parentIDs = res.fetchAll().map((result) => result[0]);
+          console.log(parentIDs);
+          if (parentIDs.length == 0) {
+            return {
+              id: data[0],
+              name: data[1],
+              descriptionHE: data[2],
+              descriptionEN: data[3],
+              displayNameHE: data[4],
+              displayNameEN: data[5],
+              imagePath: data[6],
+              price: data[7],
+              stock: data[8],
+              isVisible: data[9],
+              parentCategories: []
+            }
+          }
+          return categoriesTable.select('display_name_en').where('id IN :ids').bind('ids', ['1']).execute()
+            .then((res) => {
+              const parentCategories = res.fetchAll();
+              return {
+                id: data[0],
+                name: data[1],
+                descriptionHE: data[2],
+                descriptionEN: data[3],
+                displayNameHE: data[4],
+                displayNameEN: data[5],
+                imagePath: data[6],
+                price: data[7],
+                stock: data[8],
+                isVisible: data[9],
+                parentCategories: parentCategories
+              };
+            }).catch((e) => console.error(e));
+        })
       // TODO: add categories
-      return {
-        id: data[0],
-        name: data[1],
-        descriptionHE: data[2],
-        descriptionEN: data[3],
-        displayNameHE: data[4],
-        displayNameEN: data[5],
-        imagePath: data[6],
-        price: data[7],
-        stock: data[8],
-        isVisible: data[9]
-      };
     });
 }
 
