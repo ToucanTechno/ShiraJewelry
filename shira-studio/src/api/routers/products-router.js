@@ -56,6 +56,7 @@ productsRouter.post('/:id([0-9]+)', (req, res, next) => {
 
 productsRouter.put('/:id([0-9]+)', (req, res) => {
   req.body.price = parseInt(req.body.price);
+  console.log(req.body);
   const product = new productsModel.Product(
     null,
     req.body.name,
@@ -64,11 +65,13 @@ productsRouter.put('/:id([0-9]+)', (req, res) => {
     req.body.display_name_he,
     req.body.display_name_en,
     req.body.image_path,
-    req.body.price);
+    req.body.price,
+    req.body.stock);
   productsModel.updateProductByID(req.locals.dbSession, parseInt(req.params.id), product)
     .then((affectedItemsCount) => {
       res.json({ affectedItemsCount: affectedItemsCount });
     })
+    .catch((err) => console.error(err));
 });
 
 productsRouter.delete('/:id([0-9]+)', (req, res) => {

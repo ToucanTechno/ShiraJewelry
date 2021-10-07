@@ -1,7 +1,7 @@
 const mysqlx = require('@mysql/xdevapi');
 
 class Product {
-  constructor(productID, productName, descriptionHE, descriptionEN, displayNameHE, displayNameEN, imagePath, price) {
+  constructor(productID, productName, descriptionHE, descriptionEN, displayNameHE, displayNameEN, imagePath, price, stock) {
     this.productID = productID;
     this.productName = productName;
     this.descriptionHE = descriptionHE;
@@ -10,6 +10,7 @@ class Product {
     this.displayNameEN = displayNameEN;
     this.imagePath = imagePath;
     this.price = price;
+    this.stock = stock
   }
 };
 
@@ -42,10 +43,12 @@ function getProduct(dbSession, productId) {
   return table.select().where('id = :id').bind('id', productId).execute()
     .then((res) => {
       const data = res.fetchOne();
+      if (data === undefined) {
+        return;
+      }
       return parentsTable.select('parent_category_id').where('product_id = :id').bind('id', productId).execute()
         .then((res) => {
           const parentIDs = res.fetchAll().map((result) => result[0]);
-          console.log(parentIDs);
           if (parentIDs.length == 0) {
             return {
               id: data[0],
@@ -61,25 +64,31 @@ function getProduct(dbSession, productId) {
               parentCategories: []
             }
           }
-          return categoriesTable.select('display_name_en').where('id IN :ids').bind('ids', ['1']).execute()
-            .then((res) => {
-              const parentCategories = res.fetchAll();
-              return {
-                id: data[0],
-                name: data[1],
-                descriptionHE: data[2],
-                descriptionEN: data[3],
-                displayNameHE: data[4],
-                displayNameEN: data[5],
-                imagePath: data[6],
-                price: data[7],
-                stock: data[8],
-                isVisible: data[9],
-                parentCategories: parentCategories
-              };
-            }).catch((e) => console.error(e));
+          let promises = [];
+          parentIDs.forEach((item, index, array) => {
+            promises.push(categoriesTable.select('name', 'display_name_en', 'display_name_he').where('id = :id').bind('id', item).execute())
+          })
+
+          return Promise.all(promises).then(async (results) => {
+            const parentCategories = await results.map(res => {
+              const parentCategory = res.fetchAll()?.[0];
+              return {name: parentCategory[0], displayNameEN: parentCategory[1], displayNameHE: parentCategory[1]}
+            }).filter((x) => x !== undefined);
+            return {
+              id: data[0],
+              name: data[1],
+              descriptionHE: data[2],
+              descriptionEN: data[3],
+              displayNameHE: data[4],
+              displayNameEN: data[5],
+              imagePath: data[6],
+              price: data[7],
+              stock: data[8],
+              isVisible: data[9],
+              parentCategories: parentCategories
+            };
+          }).catch((e) => console.error(e));
         })
-      // TODO: add categories
     });
 }
 
@@ -124,6 +133,7 @@ function updateProductByID(dbSession, productId, newProduct) {
     .then((res) => {
       return res.getAffectedItemsCount()
     })
+    .catch((err) => console.error(err));
 }
 
 function deleteProductByID(dbSession, productId) {

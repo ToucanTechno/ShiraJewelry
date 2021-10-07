@@ -3,12 +3,14 @@ import {FileUploadService} from '../file-upload.service';
 import crc32 from 'crc/crc32';
 import {Observable, of} from 'rxjs';
 import {NgForm} from '@angular/forms';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {catchError} from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import {CategoryEntry} from '../../models/category';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ProductEntry} from '../../models/product';
+import {CategoryEntry} from '../../models/category';
+import {AlertComponent} from '../alert/alert.component';
+import {MatDialog} from '@angular/material/dialog';
 
 // TODO: Put somewhere better, maybe in development environment
 
@@ -24,11 +26,14 @@ export class UpdateJewelryComponent implements OnInit {
   uploadedFile: File = null;
   uploadedFileCrc: string = null;
   uploadedFileURL: string = null;
-  dbProducts$: Observable<ProductEntry[]>;
+  dbCategories$: Observable<CategoryEntry[]>;
+  dbSelectedCategories = [];
 
   constructor(private fileUploadService: FileUploadService,
               private http: HttpClient,
-              private route: ActivatedRoute,) {
+              private route: ActivatedRoute,
+              private router: Router,
+              private dialog: MatDialog) {
     this.routeType = this.route.snapshot.data.type;
     switch (this.routeType) {
       case 'add':
@@ -47,6 +52,7 @@ export class UpdateJewelryComponent implements OnInit {
       this.http.get<ProductEntry>(environment.API_SERVER_URL + '/products/' + productID).subscribe({
         next: (data) => {
           this.editedProductData = data;
+          this.dbSelectedCategories = data.parentCategories.map(category => category.name);
         },
         error: (error) => console.error(error)
       });
@@ -54,7 +60,7 @@ export class UpdateJewelryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dbProducts$ = this.http.get<ProductEntry[]>(environment.API_SERVER_URL + '/products');
+    this.dbCategories$ = this.http.get<CategoryEntry[]>(environment.API_SERVER_URL + '/categories');
   }
 
   handleFileInput(files: FileList): void {
@@ -89,9 +95,24 @@ export class UpdateJewelryComponent implements OnInit {
   }
 
   onSubmit(productForm: NgForm): void {
-    this.uploadFile().subscribe((filename) => {
-      this.addProduct(productForm, filename);
-    });
+    // TODO: different behavior for edit and add
+    switch (this.routeType) {
+      case 'add':
+        this.uploadFile().subscribe((filename) => {
+          this.addProduct(productForm, filename);
+        });
+        break;
+      case 'edit':
+        if (this.uploadedFileCrc != null) {
+          this.uploadFile().subscribe((filename) => {
+            this.editProduct(productForm, filename);
+          });
+        }
+        else {
+          this.editProduct(productForm);
+        }
+        break;
+    }
   }
 
   addProduct(productForm: NgForm, imagePath: string): void {
@@ -112,6 +133,34 @@ export class UpdateJewelryComponent implements OnInit {
       });
   }
 
+  editProduct(productForm: NgForm, imagePath?: string): void {
+    console.log(productForm);
+    this.http.put(environment.API_SERVER_URL + '/products/' + parseInt(this.route.snapshot.params.product, 10),
+      {
+        name: productForm.form.value.product_name,
+        description_he: productForm.form.value.description_he,
+        description_en: productForm.form.value.description,
+        display_name_he: productForm.form.value.product_name_he,
+        display_name_en: productForm.form.value.product_name,
+        parent_category_name: productForm.form.value.parent_categories, // TODO: make sure empty category stays empty
+        image_path: (imagePath) ? imagePath : this.editedProductData.imagePath,
+        price: productForm.form.value.price,
+        stock: productForm.form.value.stock
+      }, { responseType: 'json' })
+      .pipe(catchError((e) => of(e)))
+      .subscribe(async (res: ProductEditFormResponse | HttpErrorResponse) => {
+        if (res instanceof HttpErrorResponse) {
+          this.dialog.open(AlertComponent, {data: {message: `Request to server failed: ${res.status}`}});
+          return;
+        }
+        const message = (res.affectedItemsCount === 0) ? 'Product didn\'t change' : 'Product changed successfully';
+        const dialogRef = this.dialog.open(AlertComponent, {data: {message}});
+        await dialogRef.afterClosed().subscribe((e) => {
+          this.router.navigate(['/admin', 'edit-products']);
+        });
+      });
+  }
+
   getEditedImagePath(): string {
     if (this.uploadedFileURL !== null) {
       return this.uploadedFileURL;
@@ -127,4 +176,8 @@ export class UpdateJewelryComponent implements OnInit {
 
 interface ProductFormResponse {
   insertedID: number;
+}
+
+interface ProductEditFormResponse {
+  affectedItemsCount: number;
 }

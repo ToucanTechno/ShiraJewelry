@@ -13,8 +13,7 @@ class ProductEntry {
   imagePath: string;
   price: number;
   stock: number;
-  parentCategoryIDs: number[];
-  parentCategoryNames: string[];
+  parentCategories: {name}[];
   currency: Currency;
 
   constructor() {}

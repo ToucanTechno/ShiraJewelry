@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Currency, Product} from '../../models/product';
+import {Currency, ProductEntry} from '../../models/product';
 
 @Component({
   selector: 'app-display-grid',
@@ -10,9 +10,9 @@ export class DisplayGridComponent implements OnInit {
   @Input()
   categoryColumns: number;
   @Input()
-  products: Product[];
+  products: ProductEntry[];
   @Input()
-  ourPicks: Product[];
+  ourPicks: ProductEntry[];
 
   constructor() { }
 

@@ -26,8 +26,9 @@
     <div class="form-field">
       <mat-form-field>
         <mat-label>Categories</mat-label>
-        <mat-select multiple matNativeControl ngModel name="parent_categories" required>
-          <mat-option  *ngFor="let product of dbProducts$ | async" value="{{ product.name }}">{{ product.displayNameHE }}</mat-option>
+        <mat-select multiple  name="parent_categories" [(ngModel)]="dbSelectedCategories" required>
+          <mat-option *ngFor="let category of dbCategories$ | async"
+                      [value]="category.name">{{ category.name }}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
