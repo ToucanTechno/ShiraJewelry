@@ -28,7 +28,7 @@
         <mat-label>Categories</mat-label>
         <mat-select multiple  name="parent_categories" [(ngModel)]="dbSelectedCategories" required>
           <mat-option *ngFor="let category of dbCategories$ | async"
-                      [value]="category.name">{{ category.name }}</mat-option>
+                      [value]="category.id">{{ category.displayNameEN }}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>

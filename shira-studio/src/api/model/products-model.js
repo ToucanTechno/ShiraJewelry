@@ -130,8 +130,16 @@ function updateProductByID(dbSession, productId, newProduct) {
     .where('id = :id')
     .bind('id', productId)
     .execute()
-    .then((res) => {
-      return res.getAffectedItemsCount()
+    .then(async (res) => {
+      const updateCount = res.getAffectedItemsCount();
+      let productCategoriesTable = dbSession.getTable('product_categories');
+      const currentParents = await productCategoriesTable
+        .select('parent_category_id')
+        .where('product_id = :id')
+        .bind('id', productId)
+        .execute()
+      console.log(currentParents.fetchAll());
+      return updateCount;
     })
     .catch((err) => console.error(err));
 }
