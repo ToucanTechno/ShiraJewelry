@@ -52,7 +52,8 @@ export class UpdateJewelryComponent implements OnInit {
       this.http.get<ProductEntry>(environment.API_SERVER_URL + '/products/' + productID).subscribe({
         next: (data) => {
           this.editedProductData = data;
-          this.dbSelectedCategories = data.parentCategories.map(category => category.name);
+          this.dbSelectedCategories = data.parentCategories.map(category => category.id);
+          console.log(data.parentCategories);
         },
         error: (error) => console.error(error)
       });
@@ -142,7 +143,7 @@ export class UpdateJewelryComponent implements OnInit {
         description_en: productForm.form.value.description,
         display_name_he: productForm.form.value.product_name_he,
         display_name_en: productForm.form.value.product_name,
-        parent_category_name: productForm.form.value.parent_categories, // TODO: make sure empty category stays empty
+        parent_category_ids: productForm.form.value.parent_categories, // TODO: make sure empty category stays empty
         image_path: (imagePath) ? imagePath : this.editedProductData.imagePath,
         price: productForm.form.value.price,
         stock: productForm.form.value.stock
@@ -153,6 +154,7 @@ export class UpdateJewelryComponent implements OnInit {
           this.dialog.open(AlertComponent, {data: {message: `Request to server failed: ${res.status}`}});
           return;
         }
+        // TODO: alert that it changed, also if parent categories changed!
         const message = (res.affectedItemsCount === 0) ? 'Product didn\'t change' : 'Product changed successfully';
         const dialogRef = this.dialog.open(AlertComponent, {data: {message}});
         await dialogRef.afterClosed().subscribe((e) => {

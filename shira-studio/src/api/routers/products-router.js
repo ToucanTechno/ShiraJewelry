@@ -66,7 +66,8 @@ productsRouter.put('/:id([0-9]+)', (req, res) => {
     req.body.display_name_en,
     req.body.image_path,
     req.body.price,
-    req.body.stock);
+    req.body.stock,
+    req.body.parent_category_ids);
   productsModel.updateProductByID(req.locals.dbSession, parseInt(req.params.id), product)
     .then((affectedItemsCount) => {
       res.json({ affectedItemsCount: affectedItemsCount });

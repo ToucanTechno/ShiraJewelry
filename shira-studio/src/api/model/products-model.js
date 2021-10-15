@@ -1,7 +1,16 @@
 const mysqlx = require('@mysql/xdevapi');
 
 class Product {
-  constructor(productID, productName, descriptionHE, descriptionEN, displayNameHE, displayNameEN, imagePath, price, stock) {
+  constructor(productID,
+              productName,
+              descriptionHE,
+              descriptionEN,
+              displayNameHE,
+              displayNameEN,
+              imagePath,
+              price,
+              stock,
+              parentCategoryIDs) {
     this.productID = productID;
     this.productName = productName;
     this.descriptionHE = descriptionHE;
@@ -10,7 +19,8 @@ class Product {
     this.displayNameEN = displayNameEN;
     this.imagePath = imagePath;
     this.price = price;
-    this.stock = stock
+    this.stock = stock;
+    this.parentCategoryIDs = parentCategoryIDs;
   }
 };
 
@@ -66,13 +76,13 @@ function getProduct(dbSession, productId) {
           }
           let promises = [];
           parentIDs.forEach((item, index, array) => {
-            promises.push(categoriesTable.select('name', 'display_name_en', 'display_name_he').where('id = :id').bind('id', item).execute())
+            promises.push(categoriesTable.select('id', 'name', 'display_name_en', 'display_name_he').where('id = :id').bind('id', item).execute())
           })
 
           return Promise.all(promises).then(async (results) => {
             const parentCategories = await results.map(res => {
               const parentCategory = res.fetchAll()?.[0];
-              return {name: parentCategory[0], displayNameEN: parentCategory[1], displayNameHE: parentCategory[1]}
+              return {id: parentCategory[0], name: parentCategory[1], displayNameEN: parentCategory[2], displayNameHE: parentCategory[3]}
             }).filter((x) => x !== undefined);
             return {
               id: data[0],
@@ -133,15 +143,46 @@ function updateProductByID(dbSession, productId, newProduct) {
     .then(async (res) => {
       const updateCount = res.getAffectedItemsCount();
       let productCategoriesTable = dbSession.getTable('product_categories');
-      const currentParents = await productCategoriesTable
+      let currentParents = await productCategoriesTable
         .select('parent_category_id')
         .where('product_id = :id')
         .bind('id', productId)
         .execute()
-      console.log(currentParents.fetchAll());
+      currentParents = currentParents.fetchAll().map(entry => entry[0]);
+      const updatedParents = newProduct.parentCategoryIDs;
+      const newParents = updatedParents.filter(x => !currentParents.includes(x));
+      const removedParents = currentParents.filter(x => !updatedParents.includes(x));
+      addProductParents(dbSession, productId, newParents);
+      removeProductParents(dbSession, productId, removedParents);
       return updateCount;
     })
     .catch((err) => console.error(err));
+}
+
+function addProductParents(dbSession, productID, newParents) {
+  console.log("Adding to product", productID, "Parents", newParents);
+  const table = dbSession.getTable('product_categories');
+  for (const parentID of newParents) {
+    table.insert(
+      'product_id', 'parent_category_id')
+      .values(
+        productID,
+        parentID)
+      .execute()
+      .catch(err => console.error(err));
+  }
+}
+
+function removeProductParents(dbSession, productID, removedParents) {
+  console.log("Removing from product", productID, "Parents", removedParents);
+  const table = dbSession.getTable('product_categories');
+  for (const parentID of removedParents) {
+    table.delete().where('product_id = :product_id and parent_category_id = :parent_id')
+      .bind('product_id', productID)
+      .bind('parent_id', parentID)
+      .execute()
+      .catch(err => console.error(err));
+  }
 }
 
 function deleteProductByID(dbSession, productId) {
