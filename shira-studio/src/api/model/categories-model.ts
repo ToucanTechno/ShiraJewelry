@@ -1,6 +1,16 @@
-const mysqlx = require('@mysql/xdevapi');
+import {CategoryEntry} from '../../app/models/category';
 
 class Category {
+  categoryID: number;
+  categoryName: string;
+  descriptionHE: string;
+  descriptionEN: string;
+  displayNameHE: string;
+  displayNameEN: string;
+  imagePath: string;
+  parentCategoryPromise: Promise<any>;
+  parentCategoryID: number;
+
   constructor(dbSession,
               categoryID,
               categoryName,
@@ -18,17 +28,22 @@ class Category {
     this.displayNameEN = displayNameEN;
     this.imagePath = imagePath;
     this.parentCategoryPromise = getCategoryByName(dbSession, parentCategoryName).then((category) => {
-      this.parentCategoryID = (category === undefined) ? null : category[0];  // Gets category ID if found
+      // Gets category ID if found.
+      if (category === undefined || category.length === 0) {
+        this.parentCategoryID = null;
+      } else {
+        this.parentCategoryID = category[0];
+      }
     });
   }
-};
+}
 
-function getAllCategories(dbSession, count = 10, offset = 0) {
+function getAllCategories(dbSession, count = 10, offset = 0): Promise<Category[]> {
   const table = dbSession.getTable('categories');
   // TODO: add limit: return table.select().limit(count, offset).execute()
   return table.select().execute()
     .then((res) => {
-      let entries = res.fetchAll();
+      const entries = res.fetchAll();
       return entries.map((data) => {
         return {
           id: data[0],
@@ -41,52 +56,51 @@ function getAllCategories(dbSession, count = 10, offset = 0) {
           parentCategoryID: data[7],
           isVisible: data[8]
         };
-      })
+      });
     });
 }
 
-function getCategory(dbSession, categoryId) {
+function getCategory(dbSession, categoryId): Promise<Category> {
   const table = dbSession.getTable('categories');
   return table.select().where('id = :id').bind('id', categoryId).execute()
-    .then((res) => {
-      const entry = res.fetchOne();
-      const parentId = entry[7];
+    .then((categoryEntry) => {
+      categoryEntry = categoryEntry.fetchOne();
+      const parentId = categoryEntry[7];
       // If parentId is null, call where which will find no parent, because the code is simpler like that
       return table.select('name').where('id = :id').bind('id', parentId).execute()
         .then((res) => {
           const parentEntry = res.fetchOne();
           return {
-            id: entry[0],
-            name: entry[1],
-            descriptionHE: entry[2],
-            descriptionEN: entry[3],
-            displayNameHE: entry[4],
-            displayNameEN: entry[5],
-            imagePath: entry[6],
-            parentCategoryID: entry[7],
-            isVisible: entry[8],
+            id: categoryEntry[0],
+            name: categoryEntry[1],
+            descriptionHE: categoryEntry[2],
+            descriptionEN: categoryEntry[3],
+            displayNameHE: categoryEntry[4],
+            displayNameEN: categoryEntry[5],
+            imagePath: categoryEntry[6],
+            parentCategoryID: categoryEntry[7],
+            isVisible: categoryEntry[8],
             parentCategoryName: (parentEntry) ? parentEntry[0] : '-'
           };
-        })
+        });
     });
 }
 
-function getCategoryByName(dbSession, categoryName) {
+function getCategoryByName(dbSession, categoryName): Promise<Array<any>> {
   if (categoryName === undefined) {
     return new Promise((resolve, reject) => resolve(undefined));
   }
   const table = dbSession.getTable('categories');
   return table.select().where('name = :name').bind('name', categoryName).execute()
     .then((res) => {
-      let result = res.fetchOne();
-      return result;
+      return res.fetchOne();
     })
     .catch((error) => console.error(error));
 }
 
-function addCategory(dbSession, category) {
+function addCategory(dbSession, category): Promise<number> {
   // TODO: Validate there are no parent category circles
-  let table = dbSession.getTable('categories');
+  const table = dbSession.getTable('categories');
   return table.insert(
     'name', 'description_he', 'description_en', 'display_name_he', 'display_name_en', 'image_path', 'parent_category_id')
     .values(
@@ -99,20 +113,20 @@ function addCategory(dbSession, category) {
       category.parentCategoryID)
     .execute()
     .then((res) => {
-      if (res.getAffectedItemsCount() == 0) {
-        throw "No items were added"
+      if (res.getAffectedItemsCount() === 0) {
+        throw new Error('No items were added');
       }
       return res.getAutoIncrementValue();
     }).catch((err) => {
-      console.error("Failed adding Category:", category);
-      console.error("Error: ", err)
-      throw "Failed adding category";
+      console.error('Failed adding Category:', category);
+      console.error('Error: ', err);
+      throw new Error('Failed adding category');
     });
 }
 
-function updateCategoryByID(dbSession, categoryId, newCategory) {
+function updateCategoryByID(dbSession, categoryId, newCategory): Promise<number> {
   // TODO: Validate there are no parent category circles
-  let table = dbSession.getTable('categories');
+  const table = dbSession.getTable('categories');
   return table.update()
     .set('name', newCategory.categoryName)
     .set('description_he', newCategory.descriptionHE)
@@ -125,20 +139,20 @@ function updateCategoryByID(dbSession, categoryId, newCategory) {
     .bind('id', categoryId)
     .execute()
     .then((res) => {
-      return res.getAffectedItemsCount()
+      return res.getAffectedItemsCount();
     })
     .catch((err) => {
       console.log(err);
-      throw "Failed updating category";
+      throw new Error('Failed updating category');
     });
 }
 
-function deleteCategoryByID(dbSession, categoryId) {
-  let table = dbSession.getTable('categories');
+function deleteCategoryByID(dbSession, categoryId): Promise<number> {
+  const table = dbSession.getTable('categories');
   return table.delete().where('id = :id').bind('id', categoryId).execute()
     .then((res) => {
       return res.getAffectedItemsCount();
-    })
+    });
 }
 
 exports.getAllCategories = getAllCategories;

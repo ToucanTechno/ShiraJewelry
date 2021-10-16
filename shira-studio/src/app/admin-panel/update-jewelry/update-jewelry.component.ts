@@ -155,10 +155,13 @@ export class UpdateJewelryComponent implements OnInit {
           return;
         }
         // TODO: alert that it changed, also if parent categories changed!
-        const message = (res.affectedItemsCount === 0) ? 'Product didn\'t change' : 'Product changed successfully';
+        const isProductChanged = res.affectedItemsCount !== 0;
+        const message = (isProductChanged) ? 'Product changed successfully' : 'Product didn\'t change';
         const dialogRef = this.dialog.open(AlertComponent, {data: {message}});
         await dialogRef.afterClosed().subscribe((e) => {
-          this.router.navigate(['/admin', 'edit-products']);
+          if (isProductChanged) {
+            this.router.navigate(['/admin', 'edit-products']);
+          }
         });
       });
   }

@@ -1,8 +1,8 @@
-const express = require('express');
-const categoriesModel = require('../model/categories-model');
-const cors = require("cors");
+import express from 'express';
+import * as categoriesModel from '../model/categories-model';
+import * as cors from 'cors';
 
-let categoriesRouter = express.Router();
+const categoriesRouter = express.Router();
 const SERVER_HOSTNAME = 'http://localhost:4201';
 
 // TODO: Remove in Production
@@ -11,7 +11,7 @@ categoriesRouter.use(cors({ origin: SERVER_HOSTNAME }));
 categoriesRouter.use(express.json());
 
 categoriesRouter.get('/:id([0-9]+)', (req, res) => {
-  categoriesModel.getCategory(req.locals.dbSession, parseInt(req.params.id))
+  categoriesModel.getCategory(req.locals.dbSession, parseInt(req.params.id, 10))
     .then((category) => {
       if (!category) {
         res.sendStatus(404);
@@ -72,23 +72,23 @@ categoriesRouter.put('/:id([0-9]+)', (req, res) => {
     req.body.image_path,
     req.body.parent_category_name);
   category.parentCategoryPromise.then(() => {
-    categoriesModel.updateCategoryByID(req.locals.dbSession, parseInt(req.params.id), category)
+    categoriesModel.updateCategoryByID(req.locals.dbSession, parseInt(req.params.id, 10), category)
       .then((affectedItemsCount) => {
         res.json({ affectedItemsCount: affectedItemsCount });
       }).catch((err) => {
         res.status(400).send('Failed updating category');
-    })
+    });
   });
 });
 
 categoriesRouter.delete('/:id([0-9]+)', (req, res) => {
-  categoriesModel.deleteCategoryByID(req.locals.dbSession, parseInt(req.params.id))
+  categoriesModel.deleteCategoryByID(req.locals.dbSession, parseInt(req.params.id, 10))
     .then((affectedItemsCount) => {
       res.json({ affectedItemsCount: affectedItemsCount });
-    })
+    });
 });
 
-function prepareCategoryRequest(req) {
+function prepareCategoryRequest(req): void {
   if (req.body.description_he === undefined) {
     req.body.description_he = '';
   }

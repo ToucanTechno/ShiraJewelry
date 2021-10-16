@@ -56,7 +56,6 @@ productsRouter.post('/:id([0-9]+)', (req, res, next) => {
 
 productsRouter.put('/:id([0-9]+)', (req, res) => {
   req.body.price = parseInt(req.body.price);
-  console.log(req.body);
   const product = new productsModel.Product(
     null,
     req.body.name,
