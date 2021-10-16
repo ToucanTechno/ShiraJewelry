@@ -1,6 +1,6 @@
 import {CategoryEntry} from '../../app/models/category';
 
-class Category {
+export class Category {
   categoryID: number;
   categoryName: string;
   descriptionHE: string;
@@ -38,7 +38,7 @@ class Category {
   }
 }
 
-function getAllCategories(dbSession, count = 10, offset = 0): Promise<Category[]> {
+export function getAllCategories(dbSession, count = 10, offset = 0): Promise<Category[]> {
   const table = dbSession.getTable('categories');
   // TODO: add limit: return table.select().limit(count, offset).execute()
   return table.select().execute()
@@ -60,7 +60,7 @@ function getAllCategories(dbSession, count = 10, offset = 0): Promise<Category[]
     });
 }
 
-function getCategory(dbSession, categoryId): Promise<Category> {
+export function getCategory(dbSession, categoryId): Promise<Category> {
   const table = dbSession.getTable('categories');
   return table.select().where('id = :id').bind('id', categoryId).execute()
     .then((categoryEntry) => {
@@ -98,7 +98,7 @@ function getCategoryByName(dbSession, categoryName): Promise<Array<any>> {
     .catch((error) => console.error(error));
 }
 
-function addCategory(dbSession, category): Promise<number> {
+export function addCategory(dbSession, category): Promise<number> {
   // TODO: Validate there are no parent category circles
   const table = dbSession.getTable('categories');
   return table.insert(
@@ -124,7 +124,7 @@ function addCategory(dbSession, category): Promise<number> {
     });
 }
 
-function updateCategoryByID(dbSession, categoryId, newCategory): Promise<number> {
+export function updateCategoryByID(dbSession, categoryId, newCategory): Promise<number> {
   // TODO: Validate there are no parent category circles
   const table = dbSession.getTable('categories');
   return table.update()
@@ -147,17 +147,10 @@ function updateCategoryByID(dbSession, categoryId, newCategory): Promise<number>
     });
 }
 
-function deleteCategoryByID(dbSession, categoryId): Promise<number> {
+export function deleteCategoryByID(dbSession, categoryId): Promise<number> {
   const table = dbSession.getTable('categories');
   return table.delete().where('id = :id').bind('id', categoryId).execute()
     .then((res) => {
       return res.getAffectedItemsCount();
     });
 }
-
-exports.getAllCategories = getAllCategories;
-exports.getCategory = getCategory;
-exports.addCategory = addCategory;
-exports.updateCategoryByID = updateCategoryByID;
-exports.deleteCategoryByID = deleteCategoryByID;
-exports.Category = Category;

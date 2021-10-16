@@ -1,6 +1,6 @@
 import mysqlx from '@mysql/xdevapi';
 
-class Product {
+export class Product {
   productID: number;
   productName: string;
   descriptionHE: string;
@@ -35,7 +35,7 @@ class Product {
   }
 };
 
-function getAllProducts(dbSession, count: number = 10, offset: number = 0): Promise<Product> {
+export function getAllProducts(dbSession, count: number = 10, offset: number = 0): Promise<Product> {
   const table = dbSession.getTable('products');
   return table.select().limit(count, offset).execute()
     .then((res) => {
@@ -57,7 +57,7 @@ function getAllProducts(dbSession, count: number = 10, offset: number = 0): Prom
     });
 }
 
-function getProduct(dbSession, productId): Promise<Product> {
+export function getProduct(dbSession, productId): Promise<Product> {
   const table = dbSession.getTable('products');
   const parentsTable = dbSession.getTable('product_categories');
   const categoriesTable = dbSession.getTable('categories');
@@ -117,8 +117,8 @@ function getProduct(dbSession, productId): Promise<Product> {
     });
 }
 
-function addProduct(dbSession, product): Promise<number> {
-  let table = dbSession.getTable('products');
+export function addProduct(dbSession, product): Promise<number> {
+  const table = dbSession.getTable('products');
   // TODO: Insert parent categories one by one to product_categories
   // TODO: add stock to table
   return table.insert(
@@ -141,7 +141,7 @@ function addProduct(dbSession, product): Promise<number> {
     });
 }
 
-function updateProductByID(dbSession, productId, newProduct): Promise<number> {
+export function updateProductByID(dbSession, productId, newProduct): Promise<number> {
   const table = dbSession.getTable('products');
   return table.update()
     .set('name', newProduct.productName)
@@ -198,17 +198,10 @@ function removeProductParents(dbSession, productID, removedParents): void {
   }
 }
 
-function deleteProductByID(dbSession, productId): Promise<number> {
+export function deleteProductByID(dbSession, productId): Promise<number> {
   const table = dbSession.getTable('products');
   return table.delete().where('id = :id').bind('id', productId).execute()
     .then((res) => {
       return res.getAffectedItemsCount();
     });
 }
-
-exports.getAllProducts = getAllProducts;
-exports.getProduct = getProduct;
-exports.addProduct = addProduct;
-exports.updateProductByID = updateProductByID;
-exports.deleteProductByID = deleteProductByID;
-exports.Product = Product;

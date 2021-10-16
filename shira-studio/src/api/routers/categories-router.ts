@@ -2,7 +2,7 @@ import express from 'express';
 import * as categoriesModel from '../model/categories-model';
 import * as cors from 'cors';
 
-const categoriesRouter = express.Router();
+export const categoriesRouter = express.Router();
 const SERVER_HOSTNAME = 'http://localhost:4201';
 
 // TODO: Remove in Production
@@ -28,7 +28,7 @@ categoriesRouter.get('/', (req, res) => {
 });
 
 categoriesRouter.post('/', (req, res) => {
-  prepareCategoryRequest(req)
+  prepareCategoryRequest(req);
   const category = new categoriesModel.Category(
     req.locals.dbSession,
     undefined,
@@ -50,9 +50,9 @@ categoriesRouter.post('/', (req, res) => {
 });
 
 categoriesRouter.post('/:id([0-9]+)', (req, res, next) => {
-  if (req.body._method == 'PUT' || req.body._method == "DELETE") {
+  if (req.body._method === 'PUT' || req.body._method === 'DELETE') {
     req.method = req.body._method;
-    next()
+    next();
   }
   else {
     res.sendStatus(404);
@@ -74,7 +74,7 @@ categoriesRouter.put('/:id([0-9]+)', (req, res) => {
   category.parentCategoryPromise.then(() => {
     categoriesModel.updateCategoryByID(req.locals.dbSession, parseInt(req.params.id, 10), category)
       .then((affectedItemsCount) => {
-        res.json({ affectedItemsCount: affectedItemsCount });
+        res.json({ affectedItemsCount });
       }).catch((err) => {
         res.status(400).send('Failed updating category');
     });
@@ -84,7 +84,7 @@ categoriesRouter.put('/:id([0-9]+)', (req, res) => {
 categoriesRouter.delete('/:id([0-9]+)', (req, res) => {
   categoriesModel.deleteCategoryByID(req.locals.dbSession, parseInt(req.params.id, 10))
     .then((affectedItemsCount) => {
-      res.json({ affectedItemsCount: affectedItemsCount });
+      res.json({ affectedItemsCount });
     });
 });
 
