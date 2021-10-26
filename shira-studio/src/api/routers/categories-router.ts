@@ -96,5 +96,3 @@ function prepareCategoryRequest(req): void {
     req.body.description_en = '';
   }
 }
-
-module.exports = categoriesRouter;

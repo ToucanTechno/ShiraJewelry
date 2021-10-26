@@ -1,8 +1,8 @@
 import express from 'express';
 import { productsRouter } from './routers/products-router';
-import categoriesRouter from './routers/categories-router';
-import DBSession from './model/db-session';
-import fileUploadRouter from './routers/file-upload-router';
+import { categoriesRouter } from './routers/categories-router';
+import { DBSession } from './model/db-session';
+import { fileUploadRouter } from './routers/file-upload-router';
 
 const app = express();
 const PORT = 3000;
