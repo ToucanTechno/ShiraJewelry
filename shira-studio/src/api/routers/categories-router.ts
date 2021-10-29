@@ -1,6 +1,6 @@
 import express from 'express';
-import * as categoriesModel from '../model/categories-model';
-import * as cors from 'cors';
+import * as categoriesModel from '../model/categories-model.js';
+import cors from 'cors';
 
 export const categoriesRouter = express.Router();
 const SERVER_HOSTNAME = 'http://localhost:4201';

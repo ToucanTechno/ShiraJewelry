@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import * as cors from 'cors';
+import cors from 'cors';
 
 export let fileUploadRouter = express.Router();
 const SERVER_HOSTNAME = 'http://localhost:4201';

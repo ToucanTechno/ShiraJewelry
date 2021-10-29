@@ -1,6 +1,6 @@
 import express from 'express';
-import * as productsModel from '../model/products-model';
-import * as cors from 'cors';
+import * as productsModel from '../model/products-model.js';
+import cors from 'cors';
 
 export const productsRouter = express.Router();
 const SERVER_HOSTNAME = 'http://localhost:4201';
