@@ -86,6 +86,11 @@ export function getCategory(dbSession, categoryId): Promise<Category> {
     });
 }
 
+export function getSubcategories(dbSession, categoryID): Promise<Category[]> {
+  const table = dbSession.getTable('categories');
+  return table.select().where('parent_category_id = :parent_id').bind('parent_id', )
+}
+
 function getCategoryByName(dbSession, categoryName): Promise<Array<any>> {
   if (categoryName === undefined) {
     return new Promise((resolve, reject) => resolve(undefined));

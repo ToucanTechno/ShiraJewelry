@@ -2,8 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {SizeDetectorService, WindowSizeBreakpoint} from '../size-detector.service';
 import {throwError} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
-import {Category} from '../models/category';
+import {Category, CategoryEntry} from '../models/category';
 import {Currency} from '../models/product';
+import {environment} from '../../environments/environment';
+import {SelectionModel} from '@angular/cdk/collections';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-category',
@@ -12,10 +15,12 @@ import {Currency} from '../models/product';
 })
 export class CategoryComponent implements OnInit {
   categoryColumns: number;
-  id: number;
+  categoryID: number;
   categoryContent: Category;
 
-  constructor(private sizeDetectorService: SizeDetectorService, private route: ActivatedRoute) { }
+  constructor(private sizeDetectorService: SizeDetectorService,
+              private route: ActivatedRoute,
+              private http: HttpClient) { }
 
   ngOnInit(): void {
     this.categoryColumns = this.windowBreakpointToColumns(this.sizeDetectorService.getCurrentSizeBreakpoint());
@@ -23,7 +28,20 @@ export class CategoryComponent implements OnInit {
       this.categoryColumns = this.windowBreakpointToColumns(windowSizeBreakpoint);
     });
 
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
+    this.categoryID = Number(this.route.snapshot.paramMap.get('id'));
+
+    this.http.get<CategoryEntry>(environment.API_SERVER_URL + '/categories/' + this.categoryID).subscribe({
+      next: (category: CategoryEntry) => {
+        this.categoryContent.name = category.displayNameHE;
+        this.categoryContent.description = category.descriptionHE;
+        this.categoryContent.imagePath = category.imagePath;
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+
+    this.http.get(environment.API_SERVER_URL + )
 
     this.categoryContent = {
       name: 'Category1',
@@ -32,9 +50,10 @@ export class CategoryComponent implements OnInit {
         {
           name: 'Sub1',
           description: 'lorem ipsum',
+          imagePath: '',
           subcategories: [],
           products: [
-            {id: 11, currency: Currency.USD, price: 13.34, imagePath: 'test_image1.jpg'},
+            /*{id: 11, currency: Currency.USD, price: 13.34, imagePath: 'test_image1.jpg'},
             {id: 12, currency: Currency.USD, price: 23.34, imagePath: 'test_image1.jpg'},
             {id: 13, currency: Currency.USD, price: 33.34, imagePath: 'test_image1.jpg'},
             {id: 14, currency: Currency.USD, price: 43.34, imagePath: 'test_image1.jpg'},
@@ -43,7 +62,7 @@ export class CategoryComponent implements OnInit {
             {id: 17, currency: Currency.USD, price: 73.34, imagePath: 'test_image1.jpg'},
             {id: 18, currency: Currency.USD, price: 83.34, imagePath: 'test_image1.jpg'},
             {id: 19, currency: Currency.USD, price: 93.34, imagePath: 'test_image1.jpg'},
-            {id: 20, currency: Currency.USD, price: 103.34, imagePath: 'test_image1.jpg'}
+            {id: 20, currency: Currency.USD, price: 103.34, imagePath: 'test_image1.jpg'}*/
           ],
           ourPicks: []
         },
@@ -52,7 +71,7 @@ export class CategoryComponent implements OnInit {
           description: 'lorem ipsum',
           subcategories: [],
           products: [
-            {id: 1, currency: Currency.USD, price: 12.34, imagePath: 'test_image1.jpg'},
+            /*{id: 1, currency: Currency.USD, price: 12.34, imagePath: 'test_image1.jpg'},
             {id: 2, currency: Currency.USD, price: 22.34, imagePath: 'test_image1.jpg'},
             {id: 3, currency: Currency.USD, price: 32.34, imagePath: 'test_image1.jpg'},
             {id: 4, currency: Currency.USD, price: 42.34, imagePath: 'test_image1.jpg'},
@@ -61,13 +80,13 @@ export class CategoryComponent implements OnInit {
             {id: 7, currency: Currency.USD, price: 72.34, imagePath: 'test_image1.jpg'},
             {id: 8, currency: Currency.USD, price: 82.34, imagePath: 'test_image1.jpg'},
             {id: 9, currency: Currency.USD, price: 92.34, imagePath: 'test_image1.jpg'},
-            {id: 10, currency: Currency.USD, price: 102.34, imagePath: 'test_image1.jpg'}
+            {id: 10, currency: Currency.USD, price: 102.34, imagePath: 'test_image1.jpg'}*/
           ],
           ourPicks: []
         }
       ],
       products: [
-        {id: 21, currency: Currency.USD, price: 12.34, imagePath: 'test_image1.jpg'},
+        /*{id: 21, currency: Currency.USD, price: 12.34, imagePath: 'test_image1.jpg'},
         {id: 22, currency: Currency.USD, price: 22.34, imagePath: 'test_image1.jpg'},
         {id: 23, currency: Currency.USD, price: 32.34, imagePath: 'test_image1.jpg'},
         {id: 24, currency: Currency.USD, price: 42.34, imagePath: 'test_image1.jpg'},
@@ -76,9 +95,10 @@ export class CategoryComponent implements OnInit {
         {id: 27, currency: Currency.USD, price: 72.34, imagePath: 'test_image1.jpg'},
         {id: 28, currency: Currency.USD, price: 82.34, imagePath: 'test_image1.jpg'},
         {id: 29, currency: Currency.USD, price: 92.34, imagePath: 'test_image1.jpg'},
-        {id: 30, currency: Currency.USD, price: 102.34, imagePath: 'test_image1.jpg'}],
+        {id: 30, currency: Currency.USD, price: 102.34, imagePath: 'test_image1.jpg'}*/
+      ],
       ourPicks: [
-        {id: 21, currency: Currency.USD, price: 12.34, imagePath: 'test_image1.jpg'},
+        /*{id: 21, currency: Currency.USD, price: 12.34, imagePath: 'test_image1.jpg'},
         {id: 22, currency: Currency.USD, price: 22.34, imagePath: 'test_image1.jpg'},
         {id: 23, currency: Currency.USD, price: 32.34, imagePath: 'test_image1.jpg'},
         {id: 24, currency: Currency.USD, price: 42.34, imagePath: 'test_image1.jpg'},
@@ -87,7 +107,7 @@ export class CategoryComponent implements OnInit {
         {id: 27, currency: Currency.USD, price: 72.34, imagePath: 'test_image1.jpg'},
         {id: 28, currency: Currency.USD, price: 82.34, imagePath: 'test_image1.jpg'},
         {id: 29, currency: Currency.USD, price: 92.34, imagePath: 'test_image1.jpg'},
-        {id: 30, currency: Currency.USD, price: 102.34, imagePath: 'test_image1.jpg'}
+        {id: 30, currency: Currency.USD, price: 102.34, imagePath: 'test_image1.jpg'}*/
       ]
     };
   }

@@ -3,6 +3,7 @@ import {ProductEntry} from './product';
 interface Category {
   name: string;
   description: string;
+  imagePath: string;
   subcategories: Category[];
   products: ProductEntry[];
   ourPicks: ProductEntry[];
