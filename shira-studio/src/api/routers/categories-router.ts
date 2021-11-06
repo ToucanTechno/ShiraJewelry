@@ -4,19 +4,30 @@ import cors from 'cors';
 
 export const categoriesRouter = express.Router();
 const SERVER_HOSTNAME = 'http://localhost:4201';
+const IDRegex = ':id([0-9]+)';
 
 // TODO: Remove in Production
 categoriesRouter.use(cors({ origin: SERVER_HOSTNAME }));
 
 categoriesRouter.use(express.json());
 
-categoriesRouter.get('/:id([0-9]+)', (req, res) => {
+categoriesRouter.get('/' + IDRegex, (req, res) => {
   categoriesModel.getCategory(req.locals.dbSession, parseInt(req.params.id, 10))
     .then((category) => {
       if (!category) {
         res.sendStatus(404);
       }
       res.json(category);
+    });
+});
+
+categoriesRouter.get('/' + IDRegex + '/subcategories', (req, res) => {
+  categoriesModel.getSubcategories(req.locals.dbSession, parseInt(req.params.id, 10))
+    .then((subcategories) => {
+      if (!subcategories) {
+        res.sendStatus(404);
+      }
+      res.json(subcategories);
     });
 });
 
@@ -49,7 +60,7 @@ categoriesRouter.post('/', (req, res) => {
   });
 });
 
-categoriesRouter.post('/:id([0-9]+)', (req, res, next) => {
+categoriesRouter.post('/' + IDRegex, (req, res, next) => {
   if (req.body._method === 'PUT' || req.body._method === 'DELETE') {
     req.method = req.body._method;
     next();
@@ -59,7 +70,7 @@ categoriesRouter.post('/:id([0-9]+)', (req, res, next) => {
   }
 });
 
-categoriesRouter.put('/:id([0-9]+)', (req, res) => {
+categoriesRouter.put('/' + IDRegex, (req, res) => {
   prepareCategoryRequest(req);
   const category = new categoriesModel.Category(
     req.locals.dbSession,
@@ -81,7 +92,7 @@ categoriesRouter.put('/:id([0-9]+)', (req, res) => {
   });
 });
 
-categoriesRouter.delete('/:id([0-9]+)', (req, res) => {
+categoriesRouter.delete('/' + IDRegex, (req, res) => {
   categoriesModel.deleteCategoryByID(req.locals.dbSession, parseInt(req.params.id, 10))
     .then((affectedItemsCount) => {
       res.json({ affectedItemsCount });

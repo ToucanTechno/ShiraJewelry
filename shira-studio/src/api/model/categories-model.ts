@@ -88,7 +88,12 @@ export function getCategory(dbSession, categoryId): Promise<Category> {
 
 export function getSubcategories(dbSession, categoryID): Promise<Category[]> {
   const table = dbSession.getTable('categories');
-  return table.select().where('parent_category_id = :parent_id').bind('parent_id', )
+  return table.select().where('parent_category_id = :parent_id').bind('parent_id', categoryID).execute()
+    .then((result) => {
+      const parentEntries = result.fetchAll();
+      console.log(parentEntries);
+      return 0;
+    });
 }
 
 function getCategoryByName(dbSession, categoryName): Promise<Array<any>> {
