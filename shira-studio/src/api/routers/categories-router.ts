@@ -24,10 +24,12 @@ categoriesRouter.get('/' + IDRegex, (req, res) => {
 categoriesRouter.get('/' + IDRegex + '/subcategories', (req, res) => {
   categoriesModel.getSubcategories(req.locals.dbSession, parseInt(req.params.id, 10))
     .then((subcategories) => {
-      if (!subcategories) {
+      if (subcategories === undefined || subcategories === null) {
         res.sendStatus(404);
+        return;
       }
       res.json(subcategories);
+      return;
     });
 });
 

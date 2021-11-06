@@ -11,31 +11,71 @@ export class Category {
   parentCategoryPromise: Promise<any>;
   parentCategoryID: number;
 
-  constructor(dbSession,
-              categoryID,
-              categoryName,
-              descriptionHE,
-              descriptionEN,
-              displayNameHE,
-              displayNameEN,
-              imagePath,
-              parentCategoryName) {
-    this.categoryID = categoryID;
-    this.categoryName = categoryName;
-    this.descriptionHE = descriptionHE;
-    this.descriptionEN = descriptionEN;
-    this.displayNameHE = displayNameHE;
-    this.displayNameEN = displayNameEN;
-    this.imagePath = imagePath;
-    this.parentCategoryPromise = getCategoryByName(dbSession, parentCategoryName).then((category) => {
-      // Gets category ID if found.
-      if (category === undefined || category.length === 0) {
-        this.parentCategoryID = null;
-      } else {
-        this.parentCategoryID = category[0];
-      }
+  constructor() {}
+
+  public setup(dbSession: any,
+               categoryID: number,
+               categoryName: string,
+               descriptionHE: string,
+               descriptionEN: string,
+               displayNameHE: string,
+               displayNameEN: string,
+               imagePath: string,
+               parentCategoryName: string): Promise<undefined> {
+    return new Promise<undefined>((resolve, reject) => {
+      this.categoryID = categoryID;
+      this.categoryName = categoryName;
+      this.descriptionHE = descriptionHE;
+      this.descriptionEN = descriptionEN;
+      this.displayNameHE = displayNameHE;
+      this.displayNameEN = displayNameEN;
+      this.imagePath = imagePath;
+      this.parentCategoryPromise = getCategoryByName(dbSession, parentCategoryName).then((category) => {
+        // Gets category ID if found.
+        if (category === undefined || category.length === 0) {
+          this.parentCategoryID = null;
+        } else {
+          this.parentCategoryID = category[0];
+        }
+        resolve(undefined);
+      });
     });
   }
+
+  public async run(dbSession: any,
+                   categoryID: number,
+                   categoryName: string,
+                   descriptionHE: string,
+                   descriptionEN: string,
+                   displayNameHE: string,
+                   displayNameEN: string,
+                   imagePath: string,
+                   parentCategoryName: string): Promise<void> {
+    await this.setup(dbSession,
+      categoryID,
+      categoryName,
+      descriptionHE,
+      descriptionEN,
+      displayNameHE,
+      displayNameEN,
+      imagePath,
+      parentCategoryName);
+  }
+}
+
+function convertEntryToCategory(categoryEntry: Array<any>, parentEntry: string) {
+  return {
+    id: categoryEntry[0],
+    name: categoryEntry[1],
+    descriptionHE: categoryEntry[2],
+    descriptionEN: categoryEntry[3],
+    displayNameHE: categoryEntry[4],
+    displayNameEN: categoryEntry[5],
+    imagePath: categoryEntry[6],
+    parentCategoryID: categoryEntry[7],
+    isVisible: categoryEntry[8],
+    parentCategoryName: (parentEntry) ? parentEntry[0] : '-'
+  };
 }
 
 export function getAllCategories(dbSession, count = 10, offset = 0): Promise<Category[]> {
@@ -92,7 +132,7 @@ export function getSubcategories(dbSession, categoryID): Promise<Category[]> {
     .then((result) => {
       const parentEntries = result.fetchAll();
       console.log(parentEntries);
-      return 0;
+      return parentEntries;
     });
 }
 
